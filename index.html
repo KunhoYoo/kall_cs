@@ -1,1 +1,2500 @@
-test
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kall CS | 예약 관리</title>
+  <style>
+    :root {
+      --bg: #f5f8fc;
+      --surface: #fff;
+      --surface-2: #f9fbff;
+      --ink: #0f172a;
+      --ink-2: #334155;
+      --muted: #64748b;
+      --line: #dce5f2;
+      --line-2: #edf2f8;
+      --blue: #1167ff;
+      --blue-2: #0956df;
+      --blue-soft: #eaf3ff;
+      --nav: #061f3d;
+      --nav-2: #082b54;
+      --green: #18b86b;
+      --green-soft: #e7f9ef;
+      --amber: #f5a400;
+      --amber-soft: #fff4db;
+      --red: #ff4d5e;
+      --red-soft: #fff0f2;
+      --gray-soft: #f1f5f9;
+      --shadow: 0 12px 35px rgba(15, 23, 42, .08);
+      --side: 220px;
+      --detail: 430px;
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; }
+    html { min-height: 100%; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background: var(--bg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Apple SD Gothic Neo", "Noto Sans KR", Arial, sans-serif;
+      letter-spacing: 0;
+    }
+
+    button, input, select, textarea { font: inherit; }
+    button { border: 0; cursor: pointer; }
+    button:disabled { cursor: not-allowed; opacity: .55; }
+    a { color: inherit; text-decoration: none; }
+    .hidden { display: none !important; }
+
+    .login-page {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: minmax(380px, 520px) 1fr;
+      background:
+        linear-gradient(115deg, rgba(6, 31, 61, .96), rgba(8, 43, 84, .92)),
+        radial-gradient(circle at 76% 18%, rgba(17, 103, 255, .34), transparent 33%),
+        #061f3d;
+    }
+
+    .login-panel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px;
+      background: #fff;
+    }
+
+    .login-card { width: min(100%, 390px); }
+    .brand-box {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      color: #fff;
+      background: var(--blue);
+      font-weight: 950;
+      box-shadow: 0 12px 24px rgba(17, 103, 255, .25);
+    }
+
+    .login-card h1 {
+      margin: 20px 0 8px;
+      font-size: 30px;
+      line-height: 1.18;
+      letter-spacing: 0;
+    }
+
+    .login-card p {
+      margin: 0 0 26px;
+      color: var(--muted);
+      line-height: 1.62;
+    }
+
+    .field { margin-bottom: 14px; }
+    .field label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--ink-2);
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    .field input,
+    .field select,
+    .field textarea,
+    .filter-input,
+    .filter-select,
+    .date-input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      color: var(--ink);
+      outline: none;
+      transition: border-color .16s, box-shadow .16s;
+    }
+
+    .field input,
+    .field select,
+    .filter-input,
+    .filter-select,
+    .date-input {
+      height: 42px;
+      padding: 0 12px;
+    }
+
+    .field textarea {
+      min-height: 80px;
+      resize: vertical;
+      padding: 10px 12px;
+      line-height: 1.5;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus,
+    .filter-input:focus,
+    .filter-select:focus,
+    .date-input:focus {
+      border-color: rgba(17, 103, 255, .62);
+      box-shadow: 0 0 0 3px rgba(17, 103, 255, .1);
+    }
+
+    .primary-btn,
+    .secondary-btn,
+    .ghost-btn,
+    .danger-btn,
+    .icon-btn,
+    .small-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 40px;
+      border-radius: var(--radius);
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .primary-btn {
+      color: #fff;
+      background: var(--blue);
+      box-shadow: 0 12px 24px rgba(17, 103, 255, .22);
+    }
+
+    .secondary-btn {
+      color: var(--blue);
+      border: 1px solid #b9d5ff;
+      background: #fff;
+    }
+
+    .ghost-btn {
+      color: var(--ink-2);
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .danger-btn {
+      color: #e11d48;
+      border: 1px solid #fecdd3;
+      background: #fff7f8;
+    }
+
+    .icon-btn {
+      width: 42px;
+      color: var(--ink-2);
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .small-btn {
+      min-height: 30px;
+      padding: 0 10px;
+      color: var(--ink-2);
+      border: 1px solid var(--line);
+      background: #fff;
+      font-size: 12px;
+    }
+
+    .login-card .primary-btn { width: 100%; height: 46px; }
+    .login-error {
+      display: none;
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: var(--radius);
+      color: #be123c;
+      background: var(--red-soft);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .login-visual {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 54px;
+      color: #fff;
+    }
+
+    .login-visual-inner { max-width: 640px; }
+    .login-visual h2 { margin: 0 0 18px; font-size: 50px; line-height: 1.07; letter-spacing: 0; }
+    .login-visual p { margin: 0; max-width: 560px; color: rgba(255, 255, 255, .76); line-height: 1.75; font-size: 17px; }
+    .login-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 34px;
+    }
+
+    .login-stat {
+      min-height: 112px;
+      padding: 18px;
+      border: 1px solid rgba(255, 255, 255, .14);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, .08);
+      backdrop-filter: blur(14px);
+    }
+
+    .login-stat strong { display: block; margin-bottom: 8px; font-size: 27px; }
+    .login-stat span { color: rgba(255, 255, 255, .72); font-size: 13px; line-height: 1.5; }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: var(--side) minmax(0, 1fr);
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 10px 14px;
+      color: #fff;
+      background: linear-gradient(180deg, #061f3d, #05182e);
+    }
+
+    .side-title {
+      padding: 0 18px 28px;
+    }
+
+    .side-title strong {
+      display: block;
+      font-size: 28px;
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .side-title span {
+      display: block;
+      margin-top: 9px;
+      color: rgba(255, 255, 255, .72);
+      font-size: 14px;
+    }
+
+    .side-nav {
+      display: grid;
+      gap: 8px;
+    }
+
+    .nav-btn {
+      width: 100%;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 0 14px;
+      border-radius: var(--radius);
+      color: rgba(255, 255, 255, .82);
+      background: transparent;
+      text-align: left;
+      font-size: 15px;
+      font-weight: 850;
+    }
+
+    .nav-btn svg {
+      width: 21px;
+      height: 21px;
+      stroke-width: 2;
+      flex: 0 0 auto;
+    }
+
+    .nav-btn.active {
+      color: #fff;
+      background: var(--blue);
+      box-shadow: 0 12px 22px rgba(17, 103, 255, .26);
+    }
+
+    .side-session {
+      margin: auto 6px 0;
+      padding: 16px 14px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .08);
+      color: rgba(255, 255, 255, .78);
+      font-size: 13px;
+    }
+
+    .session-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #fff;
+      font-weight: 850;
+    }
+
+    .session-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #4ade80;
+    }
+
+    .side-session hr {
+      border: 0;
+      border-top: 1px solid rgba(255, 255, 255, .14);
+      margin: 13px 0;
+    }
+
+    .side-session small {
+      display: block;
+      color: rgba(255, 255, 255, .64);
+      line-height: 1.55;
+    }
+
+    .side-logout {
+      width: 100%;
+      margin-top: 13px;
+      color: #fff;
+      border-color: rgba(255, 255, 255, .28);
+      background: rgba(255, 255, 255, .08);
+    }
+
+    .main {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 0 28px;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+      box-shadow: 0 1px 0 rgba(15, 23, 42, .02);
+      z-index: 8;
+    }
+
+    .top-left {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      min-width: 0;
+    }
+
+    .menu-btn {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--ink);
+    }
+
+    .menu-lines,
+    .menu-lines::before,
+    .menu-lines::after {
+      width: 20px;
+      height: 2px;
+      display: block;
+      border-radius: 999px;
+      background: currentColor;
+      content: "";
+    }
+
+    .menu-lines::before { transform: translateY(-7px); }
+    .menu-lines::after { transform: translateY(5px); }
+
+    .top-title h1 {
+      margin: 0;
+      font-size: 21px;
+      letter-spacing: 0;
+    }
+
+    .top-title p {
+      display: none;
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .top-right {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .connection-pill {
+      min-height: 34px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 13px;
+      border-radius: 999px;
+      color: #087d47;
+      border: 1px solid #b9f0d0;
+      background: #ecfff4;
+      font-size: 13px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .connection-pill.error {
+      color: #b45309;
+      border-color: #fde68a;
+      background: #fffbeb;
+    }
+
+    .pill-dot {
+      width: 16px;
+      height: 16px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      color: #fff;
+      background: #16a34a;
+      font-size: 11px;
+      line-height: 1;
+    }
+
+    .connection-pill.error .pill-dot { background: var(--amber); }
+
+    .dummy-switch {
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 11px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink-2);
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .dummy-switch input { position: absolute; opacity: 0; pointer-events: none; }
+    .switch-track {
+      width: 34px;
+      height: 20px;
+      position: relative;
+      border-radius: 999px;
+      background: #cbd5e1;
+      transition: background .18s;
+    }
+
+    .switch-track::after {
+      width: 16px;
+      height: 16px;
+      position: absolute;
+      left: 2px;
+      top: 2px;
+      border-radius: 999px;
+      background: #fff;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, .2);
+      content: "";
+      transition: transform .18s;
+    }
+
+    .dummy-switch input:checked + .switch-track { background: var(--blue); }
+    .dummy-switch input:checked + .switch-track::after { transform: translateX(14px); }
+
+    .bell {
+      position: relative;
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      color: var(--ink-2);
+    }
+
+    .bell-badge {
+      position: absolute;
+      right: 1px;
+      top: 0;
+      width: 17px;
+      height: 17px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      color: #fff;
+      background: var(--red);
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .admin-chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 132px;
+    }
+
+    .admin-avatar {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      color: #fff;
+      background: #8d99aa;
+      font-weight: 900;
+    }
+
+    .admin-chip strong,
+    .admin-chip span {
+      display: block;
+      line-height: 1.25;
+    }
+
+    .admin-chip strong { font-size: 13px; }
+    .admin-chip span { color: var(--muted); font-size: 12px; }
+
+    .crm-layout {
+      min-height: calc(100vh - 76px);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) var(--detail);
+      gap: 26px;
+      padding: 22px 12px 0 32px;
+    }
+
+    .work-area { min-width: 0; padding-bottom: 24px; }
+    .top-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .status-tabs {
+      display: inline-flex;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, .04);
+    }
+
+    .status-tab {
+      min-width: 154px;
+      height: 50px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 0 18px;
+      border-right: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      font-weight: 900;
+    }
+
+    .status-tab:last-child { border-right: 0; }
+    .status-tab.active {
+      color: #fff;
+      background: var(--blue);
+      box-shadow: inset 0 -2px 0 rgba(0, 0, 0, .08);
+    }
+
+    .tab-count {
+      min-width: 34px;
+      height: 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 8px;
+      border-radius: 999px;
+      color: var(--blue);
+      background: var(--blue-soft);
+      font-size: 13px;
+      font-weight: 950;
+    }
+
+    .status-tab.active .tab-count {
+      color: var(--blue);
+      background: #fff;
+    }
+
+    .tab-count.amber { color: #c56d00; background: var(--amber-soft); }
+    .tab-count.green { color: #0e9f57; background: var(--green-soft); }
+    .tab-count.red { color: #e11d48; background: var(--red-soft); }
+
+    .sync-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    .sync-actions .ghost-btn,
+    .sync-actions .primary-btn {
+      height: 48px;
+      padding: 0 18px;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(160px, 1fr));
+      gap: 14px;
+      margin-bottom: 34px;
+    }
+
+    .metric-card {
+      min-height: 162px;
+      position: relative;
+      padding: 22px 24px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      box-shadow: 0 10px 26px rgba(15, 23, 42, .04);
+    }
+
+    .metric-card h3 {
+      margin: 0;
+      color: var(--ink-2);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .metric-value {
+      display: flex;
+      align-items: baseline;
+      gap: 9px;
+      margin-top: 18px;
+    }
+
+    .metric-value strong {
+      font-size: 34px;
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .metric-value span {
+      color: var(--ink-2);
+      font-size: 14px;
+    }
+
+    .metric-card small {
+      display: block;
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .metric-icon {
+      position: absolute;
+      right: 22px;
+      top: 24px;
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 9px;
+    }
+
+    .metric-icon svg { width: 20px; height: 20px; stroke-width: 2.2; }
+    .metric-icon.blue { color: var(--blue); background: var(--blue-soft); }
+    .metric-icon.amber { color: var(--amber); background: var(--amber-soft); }
+    .metric-icon.green { color: var(--green); background: var(--green-soft); }
+    .metric-icon.red { color: var(--red); background: var(--red-soft); }
+
+    .progress-track {
+      width: 100%;
+      height: 6px;
+      overflow: hidden;
+      margin-top: 16px;
+      border-radius: 999px;
+      background: #e9eef6;
+    }
+
+    .progress-bar {
+      height: 100%;
+      border-radius: inherit;
+      background: var(--blue);
+    }
+
+    .progress-bar.amber { background: var(--amber); }
+    .progress-bar.green { background: var(--green); }
+    .progress-bar.red { background: var(--red); }
+
+    .filter-row {
+      display: grid;
+      grid-template-columns: minmax(230px, 1fr) 132px 150px 150px 245px;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .search-wrap {
+      position: relative;
+    }
+
+    .search-wrap svg {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      width: 18px;
+      height: 18px;
+      color: var(--muted);
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    .search-wrap .filter-input { padding-right: 38px; }
+    .date-range {
+      display: grid;
+      grid-template-columns: 74px 1fr 20px 1fr;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+    }
+
+    .date-range span {
+      padding-left: 12px;
+      color: var(--ink-2);
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    .date-range em {
+      color: var(--muted);
+      font-style: normal;
+      text-align: center;
+    }
+
+    .date-range input {
+      height: 40px;
+      border: 0;
+      background: transparent;
+      outline: none;
+      color: var(--ink-2);
+      font-size: 13px;
+    }
+
+    .table-card {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, .05);
+    }
+
+    .table-wrap {
+      overflow: auto;
+      max-height: calc(100vh - 485px);
+      min-height: 520px;
+    }
+
+    table {
+      width: 100%;
+      min-width: 1080px;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border-bottom: 1px solid var(--line-2);
+      padding: 13px 13px;
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      height: 56px;
+      color: var(--ink-2);
+      background: #fff;
+      font-size: 13px;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    td {
+      height: 64px;
+      color: var(--ink);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    tbody tr {
+      cursor: pointer;
+      transition: background .12s;
+    }
+
+    tbody tr:hover { background: #f8fbff; }
+    tbody tr.selected {
+      background: #eaf3ff;
+      box-shadow: inset 0 1px 0 #b8d7ff, inset 0 -1px 0 #b8d7ff;
+    }
+
+    .check-cell { width: 46px; text-align: center; }
+    .row-check {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--blue);
+    }
+
+    .booking-link {
+      color: var(--blue);
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .place-name { font-weight: 850; }
+    .muted { color: var(--muted); }
+    .messenger {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .app-logo {
+      width: 22px;
+      height: 22px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 5px;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 950;
+      line-height: 1;
+    }
+
+    .app-logo.kakao { color: #111827; background: #ffd600; }
+    .app-logo.line { background: #05c755; }
+    .app-logo.wechat { background: #1aad19; }
+    .app-logo.whatsapp { background: #25d366; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 26px;
+      padding: 0 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 950;
+      white-space: nowrap;
+      border: 1px solid transparent;
+    }
+
+    .badge.blue { color: #0956df; background: #eaf3ff; border-color: #bfd8ff; }
+    .badge.green { color: #0a8f4c; background: #e7f9ef; border-color: #b9efd0; }
+    .badge.amber { color: #c56d00; background: #fff4db; border-color: #ffd996; }
+    .badge.red { color: #e11d48; background: #fff0f2; border-color: #fecdd3; }
+    .badge.gray { color: #64748b; background: #f5f7fa; border-color: #d8e0ea; }
+
+    .table-footer {
+      min-height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 0 16px;
+      color: var(--ink-2);
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    .pager {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .page-no {
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border-radius: 7px;
+      color: var(--ink-2);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .page-no.active {
+      color: #fff;
+      background: var(--blue);
+    }
+
+    .detail-panel {
+      position: sticky;
+      top: 76px;
+      height: calc(100vh - 76px);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border-left: 1px solid var(--line);
+      background: #fff;
+      box-shadow: -12px 0 35px rgba(15, 23, 42, .05);
+    }
+
+    .detail-scroll {
+      overflow: auto;
+      padding: 20px 18px 0;
+      flex: 1;
+    }
+
+    .detail-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .detail-head h2 {
+      margin: 8px 0 0;
+      font-size: 23px;
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    .detail-title {
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 950;
+    }
+
+    .detail-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 12px;
+      padding-bottom: 13px;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .detail-section {
+      padding: 15px 0;
+      border-bottom: 1px solid var(--line-2);
+    }
+
+    .detail-section h3 {
+      margin: 0 0 12px;
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 950;
+    }
+
+    .info-grid {
+      display: grid;
+      gap: 7px;
+    }
+
+    .info-row {
+      display: grid;
+      grid-template-columns: 92px minmax(0, 1fr);
+      gap: 12px;
+      color: var(--ink-2);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .info-row span:first-child {
+      color: var(--muted);
+      font-weight: 850;
+    }
+
+    .info-row span:last-child {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .progress-steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      align-items: start;
+      gap: 9px;
+      margin-top: 10px;
+    }
+
+    .step {
+      position: relative;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .step::after {
+      position: absolute;
+      top: 20px;
+      left: calc(50% + 25px);
+      width: calc(100% - 42px);
+      height: 1px;
+      background: #d7e0ec;
+      content: "";
+    }
+
+    .step:last-child::after { display: none; }
+
+    .step-icon {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 7px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: #64748b;
+      background: #f8fafc;
+    }
+
+    .step-icon svg {
+      width: 20px;
+      height: 20px;
+      stroke-width: 2.2;
+    }
+
+    .step.done .step-icon {
+      color: var(--blue);
+      border-color: #bfd8ff;
+      background: var(--blue-soft);
+    }
+
+    .step.active .step-icon {
+      color: #fff;
+      border-color: var(--amber);
+      background: var(--amber);
+      animation: activePulse 1.7s ease-in-out infinite;
+    }
+
+    @keyframes activePulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(245, 164, 0, .18); }
+      50% { box-shadow: 0 0 0 7px rgba(245, 164, 0, .1); }
+    }
+
+    .step small {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 750;
+    }
+
+    .checklist {
+      display: grid;
+      gap: 6px;
+      color: var(--ink-2);
+      font-size: 13px;
+    }
+
+    .checklist label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 23px;
+    }
+
+    .checklist input { accent-color: var(--blue); }
+
+    .radio-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 10px;
+      color: var(--ink-2);
+      font-size: 13px;
+    }
+
+    .radio-row label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .radio-row input { accent-color: var(--blue); }
+
+    .result-text {
+      width: 100%;
+      min-height: 74px;
+      padding: 10px 11px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      resize: vertical;
+      outline: none;
+      line-height: 1.5;
+    }
+
+    .result-text:focus {
+      border-color: rgba(17, 103, 255, .62);
+      box-shadow: 0 0 0 3px rgba(17, 103, 255, .1);
+    }
+
+    .detail-footer {
+      display: grid;
+      grid-template-columns: 1fr 86px 1.35fr;
+      gap: 8px;
+      padding: 12px 14px;
+      border-top: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .detail-footer .primary-btn,
+    .detail-footer .secondary-btn,
+    .detail-footer .ghost-btn {
+      height: 44px;
+      padding: 0 12px;
+    }
+
+    .toast {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 50;
+      display: none;
+      max-width: 370px;
+      padding: 13px 15px;
+      border-radius: var(--radius);
+      color: #fff;
+      background: #0f172a;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, .24);
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    .toast.show {
+      display: block;
+      animation: toastIn .18s ease-out;
+    }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .empty-state {
+      min-height: 420px;
+      display: none;
+      place-items: center;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.6;
+      border-top: 1px solid var(--line-2);
+    }
+
+    .empty-state strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--ink);
+      font-size: 16px;
+    }
+
+    @media (max-width: 1580px) {
+      .metric-grid { grid-template-columns: repeat(3, minmax(160px, 1fr)); }
+      .filter-row { grid-template-columns: minmax(220px, 1fr) 140px 140px 140px; }
+      .date-range { grid-column: 1 / -1; max-width: 360px; }
+    }
+
+    @media (max-width: 1280px) {
+      .crm-layout {
+        grid-template-columns: 1fr;
+        padding-right: 24px;
+      }
+      .detail-panel {
+        position: static;
+        height: auto;
+        max-height: none;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+      }
+      .detail-footer { border-radius: 0 0 var(--radius) var(--radius); }
+      .table-wrap { max-height: none; }
+    }
+
+    @media (max-width: 920px) {
+      .login-page { grid-template-columns: 1fr; }
+      .login-visual { display: none; }
+      .login-panel { min-height: 100vh; padding: 28px; }
+      .app { grid-template-columns: 1fr; }
+      .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index: 30;
+        width: var(--side);
+        transform: translateX(-105%);
+        transition: transform .2s;
+      }
+      .sidebar.open { transform: translateX(0); }
+      .topbar {
+        height: auto;
+        min-height: 72px;
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 14px 18px;
+      }
+      .top-right {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+      }
+      .crm-layout { padding: 18px; }
+      .top-strip {
+        align-items: stretch;
+        flex-direction: column;
+      }
+      .status-tabs { width: 100%; overflow-x: auto; }
+      .status-tab { min-width: 126px; }
+      .sync-actions { justify-content: flex-start; }
+      .metric-grid { grid-template-columns: 1fr 1fr; }
+      .filter-row { grid-template-columns: 1fr; }
+      .date-range { max-width: none; }
+      .admin-chip { display: none; }
+    }
+
+    @media (max-width: 560px) {
+      .metric-grid { grid-template-columns: 1fr; }
+      .detail-footer { grid-template-columns: 1fr; }
+      .progress-steps { grid-template-columns: repeat(2, 1fr); row-gap: 18px; }
+      .step::after { display: none; }
+      .date-range { grid-template-columns: 1fr; padding: 8px; gap: 4px; }
+      .date-range span { padding-left: 3px; }
+      .date-range em { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <section id="loginPage" class="login-page">
+    <div class="login-panel">
+      <form id="loginForm" class="login-card">
+        <div class="brand-box">K</div>
+        <h1>Kall CS 로그인</h1>
+        <p>고객 예약 접수, 전화 업무, 결과 업데이트를 관리하는 CS 운영 콘솔입니다.</p>
+        <div class="field">
+          <label for="loginId">아이디</label>
+          <input id="loginId" autocomplete="username" value="admin">
+        </div>
+        <div class="field">
+          <label for="loginPw">비밀번호</label>
+          <input id="loginPw" type="password" autocomplete="current-password" value="1234">
+        </div>
+        <button class="primary-btn" type="submit">로그인</button>
+        <div id="loginError" class="login-error">아이디 또는 비밀번호가 올바르지 않습니다.</div>
+      </form>
+    </div>
+    <div class="login-visual">
+      <div class="login-visual-inner">
+        <h2>예약 관리가 전화 업무 속도에 맞춰 움직이도록.</h2>
+        <p>Firebase로 접수되는 고객 예약을 확인하고, 상담자가 실제 통화 중 바로 처리할 수 있게 설계한 Kall CS 콘솔입니다.</p>
+        <div class="login-stats">
+          <div class="login-stat"><strong>Live</strong><span>Firebase 예약 데이터 실시간 수신</span></div>
+          <div class="login-stat"><strong>Call</strong><span>통화 상태, 체크리스트, 담당자 배정</span></div>
+          <div class="login-stat"><strong>Result</strong><span>고객 예약번호 조회 화면에 결과 반영</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="app" class="app hidden">
+    <aside id="sidebar" class="sidebar">
+      <div class="side-title">
+        <strong>Kall CS</strong>
+        <span>고객 지원 시스템</span>
+      </div>
+      <nav class="side-nav" aria-label="CS 메뉴">
+        <button class="nav-btn" type="button" data-nav="dashboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>
+          대시보드
+        </button>
+        <button class="nav-btn active" type="button" data-nav="all">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M7 3v3"/><path d="M17 3v3"/><path d="M4 8h16"/><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 12h3"/><path d="M8 16h5"/></svg>
+          예약 관리
+        </button>
+        <button class="nav-btn" type="button" data-nav="call">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.8 19.8 0 0 1 3.11 5.18 2 2 0 0 1 5.1 3h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.63 2.62a2 2 0 0 1-.45 2.11L9 10.73a16 16 0 0 0 4.27 4.27l1.28-1.28a2 2 0 0 1 2.11-.45c.84.3 1.72.51 2.62.63A2 2 0 0 1 22 16.92Z"/></svg>
+          전화 업무
+        </button>
+        <button class="nav-btn" type="button" data-nav="customers">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          고객 관리
+        </button>
+        <button class="nav-btn" type="button" data-nav="reports">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3v18h18"/><rect x="7" y="11" width="3" height="6" rx="1"/><rect x="13" y="7" width="3" height="10" rx="1"/><rect x="19" y="4" width="3" height="13" rx="1" transform="translate(-2)"/></svg>
+          통계/리포트
+        </button>
+        <button class="nav-btn" type="button" data-nav="messages">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+          메시지 발송
+        </button>
+        <button class="nav-btn" type="button" data-nav="settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 15.5A3.5 3.5 0 1 0 12 8a3.5 3.5 0 0 0 0 7.5Z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06A2 2 0 1 1 7.04 4.3l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.08a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.2.6.76 1 1.39 1H21a2 2 0 1 1 0 4h-.09c-.63 0-1.19.4-1.51 1Z"/></svg>
+          설정
+        </button>
+        <button class="nav-btn" type="button" data-nav="users">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-5"/></svg>
+          사용자 관리
+        </button>
+      </nav>
+      <div class="side-session">
+        <div class="session-line"><span class="session-dot"></span> 로그인: admin</div>
+        <hr>
+        <small>마지막 접속<br><span id="loginTime">2026-05-11 09:10</span></small>
+        <button id="sideLogoutBtn" class="ghost-btn side-logout" type="button">로그아웃</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="top-left">
+          <button id="menuBtn" class="menu-btn" type="button" aria-label="메뉴 열기"><span class="menu-lines"></span></button>
+          <div class="top-title">
+            <h1>예약 관리</h1>
+            <p>Firebase reservations 컬렉션 수신</p>
+          </div>
+        </div>
+        <div class="top-right">
+          <label class="dummy-switch" title="출시 전 화면 확인용 더미데이터 토글">
+            <input id="dummyToggle" type="checkbox" checked>
+            <span class="switch-track"></span>
+            <span id="dummyLabel">더미데이터 ON</span>
+          </label>
+          <span id="connectionPill" class="connection-pill error"><span class="pill-dot">!</span><span>Firebase 연결 준비 중</span></span>
+          <div class="bell" aria-label="알림">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 7h18s-3 0-3-7"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span id="bellCount" class="bell-badge">0</span>
+          </div>
+          <div class="admin-chip">
+            <div class="admin-avatar">A</div>
+            <div><strong>관리자</strong><span>admin</span></div>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+          </div>
+        </div>
+      </header>
+
+      <div class="crm-layout">
+        <section class="work-area">
+          <div class="top-strip">
+            <div id="statusTabs" class="status-tabs" aria-label="예약 상태">
+              <button class="status-tab active" type="button" data-view="all">전체 <span id="countAll" class="tab-count">0</span></button>
+              <button class="status-tab" type="button" data-view="active">진행중 <span id="countActive" class="tab-count amber">0</span></button>
+              <button class="status-tab" type="button" data-view="completed">예약 완료 <span id="countCompleted" class="tab-count green">0</span></button>
+              <button class="status-tab" type="button" data-view="failed">취소/실패 <span id="countFailed" class="tab-count red">0</span></button>
+            </div>
+            <div class="sync-actions">
+              <button id="refreshBtn" class="ghost-btn" type="button">
+                <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/><path d="M3 12a9 9 0 0 1 15.74-6.26L21 8"/><path d="M16 8h5V3"/></svg>
+                새로고침
+              </button>
+              <button id="syncBtn" class="primary-btn" type="button">
+                <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M20 16.58A5 5 0 0 1 18 21H6a5 5 0 0 1-1.66-9.72"/></svg>
+                예약 동기화
+              </button>
+            </div>
+          </div>
+
+          <div class="metric-grid" aria-label="예약 지표">
+            <article class="metric-card">
+              <h3>오늘 접수</h3>
+              <div class="metric-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3v18"/><path d="M7 8h10"/><path d="M5 21h14"/><path d="M5 11h14v10H5z"/></svg></div>
+              <div class="metric-value"><strong id="metricToday">0</strong><span>건</span></div>
+              <small id="metricTodaySub">어제 대비 +0%</small>
+            </article>
+            <article class="metric-card">
+              <h3>진행중</h3>
+              <div class="metric-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="9"/></svg></div>
+              <div class="metric-value"><strong id="metricActive">0</strong><span>건</span></div>
+              <small id="metricActiveSub">전체의 0%</small>
+              <div class="progress-track"><div id="progressActive" class="progress-bar amber" style="width:0%"></div></div>
+            </article>
+            <article class="metric-card">
+              <h3>예약 완료</h3>
+              <div class="metric-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m20 6-11 11-5-5"/></svg></div>
+              <div class="metric-value"><strong id="metricCompleted">0</strong><span>건</span></div>
+              <small id="metricCompletedSub">전체의 0%</small>
+              <div class="progress-track"><div id="progressCompleted" class="progress-bar green" style="width:0%"></div></div>
+            </article>
+            <article class="metric-card">
+              <h3>취소/실패</h3>
+              <div class="metric-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg></div>
+              <div class="metric-value"><strong id="metricFailed">0</strong><span>건</span></div>
+              <small id="metricFailedSub">전체의 0%</small>
+              <div class="progress-track"><div id="progressFailed" class="progress-bar red" style="width:0%"></div></div>
+            </article>
+            <article class="metric-card">
+              <h3>총 매출 (USD)</h3>
+              <div class="metric-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="M12 7v10"/><path d="M15 9.5A3 3 0 0 0 12 8c-1.7 0-3 .8-3 2s1.3 2 3 2 3 .8 3 2-1.3 2-3 2a3 3 0 0 1-3-1.5"/></svg></div>
+              <div class="metric-value"><strong id="metricRevenue">$0.00</strong></div>
+              <small>오늘 기준</small>
+            </article>
+          </div>
+
+          <div class="filter-row">
+            <div class="search-wrap">
+              <input id="searchInput" class="filter-input" placeholder="예약번호, 상호, 고객명, 메신저 ID 검색">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            </div>
+            <select id="statusFilter" class="filter-select" aria-label="상태">
+              <option value="">상태 전체</option>
+              <option value="전화 대기">전화 대기</option>
+              <option value="통화중">통화중</option>
+              <option value="전화 완료">전화 완료</option>
+              <option value="결과 업데이트">결과 업데이트</option>
+              <option value="예약 완료">예약 완료</option>
+              <option value="취소/실패">취소/실패</option>
+            </select>
+            <select id="categoryFilter" class="filter-select" aria-label="예약 유형">
+              <option value="">예약 유형 전체</option>
+            </select>
+            <select id="messengerFilter" class="filter-select" aria-label="메신저">
+              <option value="">메신저 전체</option>
+            </select>
+            <div class="date-range">
+              <span>접수일</span>
+              <input id="dateFrom" type="date" value="2026-05-04">
+              <em>~</em>
+              <input id="dateTo" type="date" value="2026-05-11">
+            </div>
+          </div>
+
+          <div class="table-card">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th class="check-cell"><input id="checkAll" class="row-check" type="checkbox" aria-label="전체 선택"></th>
+                    <th>접수일시</th>
+                    <th>예약번호</th>
+                    <th>상호명</th>
+                    <th>유형</th>
+                    <th>메신저</th>
+                    <th>고객명</th>
+                    <th>상태</th>
+                    <th>결과</th>
+                    <th>담당자</th>
+                  </tr>
+                </thead>
+                <tbody id="bookingRows"></tbody>
+              </table>
+              <div id="emptyState" class="empty-state">
+                <div>
+                  <strong>표시할 예약이 없습니다.</strong>
+                  Firebase 데이터를 기다리거나 상단 더미데이터 토글을 켜서 화면을 확인하세요.
+                </div>
+              </div>
+            </div>
+            <div class="table-footer">
+              <div><span id="footerCount">전체 0건</span></div>
+              <div class="pager">
+                <select id="pageSize" class="filter-select" style="width:118px;height:36px;">
+                  <option>10개씩 보기</option>
+                  <option>20개씩 보기</option>
+                </select>
+              </div>
+              <div class="pager" aria-label="페이지">
+                <span class="page-no active">1</span>
+                <span class="page-no">2</span>
+                <span class="page-no">3</span>
+                <span class="page-no">4</span>
+                <span class="page-no">5</span>
+                <span class="muted">...</span>
+                <span class="page-no">14</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <aside class="detail-panel" aria-label="예약 상세 정보">
+          <div class="detail-scroll">
+            <div class="detail-head">
+              <div>
+                <div class="detail-title">예약 상세 정보</div>
+                <h2 id="detailBookingNo">예약을 선택하세요</h2>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <span id="detailTopBadge" class="badge gray">대기</span>
+                <button id="closeDetailBtn" class="menu-btn" type="button" aria-label="상세 닫기" style="width:28px;height:28px;">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="detail-meta">
+              <span>접수일시&nbsp;&nbsp;<b id="detailCreated">-</b></span>
+              <span>마지막 업데이트&nbsp;&nbsp;<b id="detailUpdated">-</b></span>
+            </div>
+
+            <section class="detail-section">
+              <h3>상호 및 예약 정보</h3>
+              <div id="placeInfo" class="info-grid"></div>
+            </section>
+
+            <section class="detail-section">
+              <h3>고객 정보</h3>
+              <div id="customerInfo" class="info-grid"></div>
+            </section>
+
+            <section class="detail-section">
+              <h3>결제 정보</h3>
+              <div id="paymentInfo" class="info-grid"></div>
+            </section>
+
+            <section class="detail-section">
+              <h3>진행 상태</h3>
+              <div id="progressSteps" class="progress-steps"></div>
+            </section>
+
+            <section class="detail-section">
+              <h3>전화 체크리스트</h3>
+              <div class="checklist">
+                <label><input type="checkbox" data-check="shop_contacted"> 1. 상업체 전화 연결</label>
+                <label><input type="checkbox" data-check="slot_checked"> 2. 예약 가능 여부 확인</label>
+                <label><input type="checkbox" data-check="requested_time"> 3. 예약 조건 및 시간 확인</label>
+                <label><input type="checkbox" data-check="customer_confirmed"> 4. 예약 확정 및 고객 정보 확인</label>
+                <label><input type="checkbox" data-check="result_updated"> 5. 결과 업데이트</label>
+              </div>
+            </section>
+
+            <section class="detail-section" style="border-bottom:0;">
+              <h3>결과 업데이트</h3>
+              <div class="radio-row">
+                <label><input type="radio" name="resultType" value="confirmed"> 예약 완료</label>
+                <label><input type="radio" name="resultType" value="updated" checked> 결과 업데이트 필요</label>
+                <label><input type="radio" name="resultType" value="failed"> 예약 불가</label>
+              </div>
+              <textarea id="resultMessage" class="result-text" placeholder="결과 또는 메모를 입력하세요..."></textarea>
+            </section>
+          </div>
+          <div class="detail-footer">
+            <button id="callBtn" class="secondary-btn" type="button">
+              <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.8 19.8 0 0 1 3.11 5.18 2 2 0 0 1 5.1 3h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.63 2.62a2 2 0 0 1-.45 2.11L9 10.73a16 16 0 0 0 4.27 4.27l1.28-1.28a2 2 0 0 1 2.11-.45c.84.3 1.72.51 2.62.63A2 2 0 0 1 22 16.92Z"/></svg>
+              전화하기
+            </button>
+            <button id="holdBtn" class="ghost-btn" type="button">보류</button>
+            <button id="saveNextBtn" class="primary-btn" type="button">저장 및 다음
+              <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </button>
+          </div>
+        </aside>
+      </div>
+    </main>
+  </section>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script type="module">
+    const firebaseConfig = {
+      apiKey: "AIzaSyAryJmkrF3wWJRymP41pmjFpPLTYGzZXBg",
+      authDomain: "kall-yellowknife.firebaseapp.com",
+      projectId: "kall-yellowknife",
+      storageBucket: "kall-yellowknife.firebasestorage.app",
+      messagingSenderId: "988921015756",
+      appId: "1:988921015756:web:e991407b592a75008b4169",
+      measurementId: "G-H5ZV5KFW33"
+    };
+
+    const qs = (selector, scope = document) => scope.querySelector(selector);
+    const qsa = (selector, scope = document) => Array.from(scope.querySelectorAll(selector));
+
+    const state = {
+      view: "all",
+      selectedId: "",
+      dummyEnabled: true,
+      dummyRows: [],
+      firebaseRows: [],
+      rows: [],
+      filtered: [],
+      db: null,
+      firebaseTools: null,
+      firebaseReady: false,
+      unsubscribe: null
+    };
+
+    const dummyRows = [
+      {
+        source: "dummy",
+        bookingNo: "KA-260511-4321",
+        createdAtISO: "2026-05-11T08:40:00+09:00",
+        updatedAtClient: "",
+        placeName: "몽탄 서울",
+        category: "Restaurant",
+        placePhone: "+82-2-555-4321",
+        people: "2명",
+        requestTitle: "창가 자리 요청",
+        date1: "2026-05-12 (화)",
+        time1: "19:30",
+        date2: "2026-05-13 (수)",
+        time2: "18:00",
+        reservationName: "김지현",
+        fullName: "JIHYUN KIM",
+        messenger: "KakaoTalk",
+        messengerId: "kall_test",
+        language: "한국어",
+        payMethod: "Kakao Pay",
+        paymentStatus: "paid",
+        priceUsd: 7.99,
+        callStatus: "pending",
+        resultType: "pending",
+        status: "submitted",
+        assignee: "",
+        checklist: ["shop_contacted"]
+      },
+      {
+        source: "dummy",
+        bookingNo: "KA-260511-4320",
+        createdAtISO: "2026-05-11T08:25:00+09:00",
+        placeName: "스시소라",
+        category: "Restaurant",
+        placePhone: "+82-2-555-4320",
+        people: "2명",
+        requestTitle: "오마카세 런치 예약",
+        date1: "2026-05-12 (화)",
+        time1: "12:00",
+        date2: "2026-05-14 (목)",
+        time2: "13:00",
+        reservationName: "박민수",
+        fullName: "MINSU PARK",
+        messenger: "LINE",
+        messengerId: "minsu_line",
+        language: "한국어",
+        payMethod: "Card",
+        paymentStatus: "paid",
+        priceUsd: 9.99,
+        callStatus: "in_progress",
+        resultType: "pending",
+        status: "calling",
+        assignee: "김현수",
+        checklist: ["shop_contacted", "slot_checked"]
+      },
+      {
+        source: "dummy",
+        bookingNo: "KA-260511-4319",
+        createdAtISO: "2026-05-11T07:58:00+09:00",
+        placeName: "강남세브란스병원",
+        category: "Hospital",
+        placePhone: "+82-2-555-4319",
+        people: "1명",
+        requestTitle: "건강검진 예약 문의",
+        date1: "2026-05-15 (금)",
+        time1: "09:00",
+        date2: "2026-05-18 (월)",
+        time2: "10:00",
+        reservationName: "이지영",
+        fullName: "JIYOUNG LEE",
+        messenger: "WeChat",
+        messengerId: "jiyoung_cn",
+        language: "중국어",
+        payMethod: "Card",
+        paymentStatus: "paid",
+        priceUsd: 12.99,
+        callStatus: "pending",
+        resultType: "pending",
+        status: "submitted",
+        assignee: "",
+        checklist: []
+      },
+      {
+        source: "dummy",
+        bookingNo: "KA-260510-4318",
+        createdAtISO: "2026-05-10T23:12:00+09:00",
+        placeName: "준오헤어 압구정",
+        category: "Beauty",
+        placePhone: "+82-2-555-4318",
+        people: "1명",
+        requestTitle: "디자이너 컷 예약",
+        date1: "2026-05-12 (화)",
+        time1: "16:30",
+        date2: "2026-05-13 (수)",
+        time2: "15:00",
+        reservationName: "최유리",
+        fullName: "YURI CHOI",
+        messenger: "KakaoTalk",
+        messengerId: "yuri_choi",
+        language: "한국어",
+        payMethod: "Kakao Pay",
+        paymentStatus: "paid",
+        priceUsd: 7.99,
+        callStatus: "completed",
+        resultType: "updated",
+        resultMessage: "전화는 완료되었고 결과 업데이트가 필요합니다.",
+        status: "call_completed",
+        assignee: "이수진",
+        checklist: ["shop_contacted", "slot_checked", "requested_time"]
+      },
+      {
+        source: "dummy",
+        bookingNo: "KA-260510-4317",
+        createdAtISO: "2026-05-10T21:45:00+09:00",
+        placeName: "정식당",
+        category: "Restaurant",
+        placePhone: "+82-2-555-4317",
+        people: "3명",
+        requestTitle: "디너 코스 예약",
+        date1: "2026-05-16 (토)",
+        time1: "18:00",
+        date2: "2026-05-17 (일)",
+        time2: "18:30",
+        reservationName: "정재훈",
+        fullName: "JAEHOON JUNG",
+        messenger: "LINE",
+        messengerId: "jaehoon_line",
+        language: "한국어",
+        payMethod: "Card",
+        paymentStatus: "paid",
+        priceUsd: 9.99,
+        callStatus: "completed",
+        resultType: "confirmed",
+        resultStatus: "updated",
+        resultMessage: "예약이 완료되었습니다. 예약 시간 10분 전까지 도착해 주세요.",
+        status: "reservation_completed",
+        assignee: "김현수",
+        checklist: ["shop_contacted", "slot_checked", "requested_time", "customer_confirmed", "result_updated"]
+      },
+      {
+        source: "dummy",
+        bookingNo: "KA-260510-4316",
+        createdAtISO: "2026-05-10T19:30:00+09:00",
+        placeName: "서울아산병원",
+        category: "Hospital",
+        placePhone: "+82-2-555-4316",
+        people: "1명",
+        requestTitle: "외래 진료 예약 가능 문의",
+        date1: "2026-05-19 (화)",
+        time1: "10:00",
+        date2: "2026-05-20 (수)",
+        time2: "11:00",
+        reservationName: "이현정",
+        fullName: "HYUNJUNG LEE",
+        messenger: "KakaoTalk",
+        messengerId: "hyunjung_k",
+        language: "한국어",
+        payMethod: "Card",
+        paymentStatus: "paid",
+        priceUsd: 12.99,
+        callStatus: "pending",
+        resultType: "pending",
+        status: "submitted",
+        assignee: "",
+        checklist: []
+      },
+      {
+        source: "dummy",
+        bookingNo: "KA-260510-4315",
+        createdAtISO: "2026-05-10T18:02:00+09:00",
+        placeName: "차홍룸 청담",
+        category: "Beauty",
+        placePhone: "+82-2-555-4315",
+        people: "1명",
+        requestTitle: "염색 상담 예약",
+        date1: "2026-05-14 (목)",
+        time1: "14:00",
+        date2: "2026-05-15 (금)",
+        time2: "16:00",
+        reservationName: "오세훈",
+        fullName: "SEHOON OH",
+        messenger: "WeChat",
+        messengerId: "sehoon_wx",
+        language: "중국어",
+        payMethod: "Card",
+        paymentStatus: "paid",
+        priceUsd: 8.99,
+        callStatus: "completed",
+        resultType: "confirmed",
+        resultStatus: "updated",
+        resultMessage: "예약 완료되었습니다. 방문 시 예약자 성함을 말씀해 주세요.",
+        status: "reservation_completed",
+        assignee: "이수진",
+        checklist: ["shop_contacted", "slot_checked", "requested_time", "customer_confirmed", "result_updated"]
+      },
+      {
+        source: "dummy",
+        bookingNo: "KA-260510-4314",
+        createdAtISO: "2026-05-10T16:50:00+09:00",
+        placeName: "밍글스",
+        category: "Restaurant",
+        placePhone: "+82-2-555-4314",
+        people: "2명",
+        requestTitle: "알러지 정보 전달 필요",
+        date1: "2026-05-18 (월)",
+        time1: "19:00",
+        date2: "2026-05-19 (화)",
+        time2: "20:00",
+        reservationName: "한소희",
+        fullName: "SOHEE HAN",
+        messenger: "LINE",
+        messengerId: "sohee_line",
+        language: "한국어",
+        payMethod: "Kakao Pay",
+        paymentStatus: "paid",
+        priceUsd: 7.99,
+        callStatus: "pending",
+        resultType: "pending",
+        status: "submitted",
+        assignee: "",
+        checklist: []
+      },
+      {
+        source: "dummy",
+        bookingNo: "KA-260510-4313",
+        createdAtISO: "2026-05-10T14:11:00+09:00",
+        placeName: "다나 성형외과",
+        category: "Clinic",
+        placePhone: "+82-2-555-4313",
+        people: "1명",
+        requestTitle: "상담 예약",
+        date1: "2026-05-21 (목)",
+        time1: "11:30",
+        date2: "2026-05-22 (금)",
+        time2: "14:30",
+        reservationName: "유승호",
+        fullName: "SEUNGHO YOO",
+        messenger: "KakaoTalk",
+        messengerId: "seungho_k",
+        language: "한국어",
+        payMethod: "Card",
+        paymentStatus: "paid",
+        priceUsd: 12.99,
+        callStatus: "in_progress",
+        resultType: "pending",
+        status: "calling",
+        assignee: "김현수",
+        checklist: ["shop_contacted"]
+      },
+      {
+        source: "dummy",
+        bookingNo: "KA-260510-4312",
+        createdAtISO: "2026-05-10T12:05:00+09:00",
+        placeName: "에이바헤어",
+        category: "Beauty",
+        placePhone: "+82-2-555-4312",
+        people: "1명",
+        requestTitle: "펌 예약 가능 확인",
+        date1: "2026-05-13 (수)",
+        time1: "13:00",
+        date2: "2026-05-14 (목)",
+        time2: "15:00",
+        reservationName: "장하늘",
+        fullName: "HANEUL JANG",
+        messenger: "WeChat",
+        messengerId: "haneul_wx",
+        language: "중국어",
+        payMethod: "Card",
+        paymentStatus: "paid",
+        priceUsd: 8.99,
+        callStatus: "completed",
+        resultType: "failed",
+        resultStatus: "updated",
+        resultMessage: "요청하신 시간은 예약이 불가합니다. 다른 시간을 선택해 주세요.",
+        status: "failed",
+        assignee: "이수진",
+        checklist: ["shop_contacted", "slot_checked", "result_updated"]
+      }
+    ];
+
+    const statusMap = {
+      pending: { label: "대기", badge: "gray" },
+      updated: { label: "결과 업데이트", badge: "blue" },
+      confirmed: { label: "예약 완료", badge: "green" },
+      failed: { label: "취소/실패", badge: "red" }
+    };
+
+    function normalize(docId, data, source = "firebase") {
+      const bookingNo = data.bookingNo || docId || "";
+      return {
+        ...data,
+        source,
+        bookingNo,
+        id: bookingNo,
+        placeName: data.placeName || data.storeName || "-",
+        reservationName: data.reservationName || data.customerName || data.fullName || "-",
+        category: data.category || data.type || "기타",
+        messenger: data.messenger || "미기재",
+        paymentStatus: data.paymentStatus || "pending",
+        callStatus: data.callStatus || "pending",
+        resultType: data.resultType || inferResultType(data),
+        status: data.status || "submitted",
+        assignee: data.assignee || data.agent || "",
+        checklist: Array.isArray(data.checklist) ? data.checklist : []
+      };
+    }
+
+    function inferResultType(item) {
+      const raw = String(item.resultType || item.resultStatus || item.status || "").toLowerCase();
+      if (raw.includes("confirm") || raw.includes("complete") || raw.includes("reservation_completed")) return "confirmed";
+      if (raw.includes("fail") || raw.includes("cancel") || raw.includes("full")) return "failed";
+      if (item.resultMessage || raw.includes("updated")) return "updated";
+      return "pending";
+    }
+
+    function parseDate(value) {
+      if (!value) return null;
+      if (typeof value.toDate === "function") return value.toDate();
+      const date = new Date(value);
+      return Number.isNaN(date.getTime()) ? null : date;
+    }
+
+    function createdValue(item) {
+      return item.createdAt || item.createdDate || item.createdAtISO || item.submittedAt || "";
+    }
+
+    function createdTime(item) {
+      return parseDate(createdValue(item))?.getTime() || 0;
+    }
+
+    function formatDateTime(value) {
+      const date = parseDate(value);
+      if (!date) return "-";
+      return new Intl.DateTimeFormat("ko-KR", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit"
+      }).format(date).replaceAll(". ", "-").replace(".", "");
+    }
+
+    function formatShortDateTime(value) {
+      const date = parseDate(value);
+      if (!date) return "-";
+      return new Intl.DateTimeFormat("ko-KR", {
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit"
+      }).format(date);
+    }
+
+    function dateKey(value) {
+      const date = parseDate(value);
+      if (!date) return "";
+      return new Intl.DateTimeFormat("en-CA", { year: "numeric", month: "2-digit", day: "2-digit", timeZone: "Asia/Seoul" }).format(date);
+    }
+
+    function todayKey() {
+      return new Intl.DateTimeFormat("en-CA", { year: "numeric", month: "2-digit", day: "2-digit", timeZone: "Asia/Seoul" }).format(new Date());
+    }
+
+    function isCallDone(item) {
+      return ["completed", "done", "전화 완료", "전화완료"].includes(String(item.callStatus || "").toLowerCase()) || Boolean(item.callCompletedAt);
+    }
+
+    function isCompleted(item) {
+      return item.resultType === "confirmed" || item.status === "reservation_completed";
+    }
+
+    function isFailed(item) {
+      return item.resultType === "failed" || ["failed", "cancelled"].includes(item.status);
+    }
+
+    function statusInfo(item) {
+      if (isCompleted(item)) return { label: "예약 완료", badge: "green", bucket: "completed" };
+      if (isFailed(item)) return { label: "취소/실패", badge: "red", bucket: "failed" };
+      if (item.callStatus === "in_progress" || item.status === "calling") return { label: "통화중", badge: "blue", bucket: "call" };
+      if (isCallDone(item)) return { label: "전화 완료", badge: "green", bucket: "active" };
+      return { label: "전화 대기", badge: "amber", bucket: "call" };
+    }
+
+    function resultInfo(item) {
+      if (isCompleted(item)) return statusMap.confirmed;
+      if (isFailed(item)) return statusMap.failed;
+      if (isCallDone(item) || item.resultType === "updated") return statusMap.updated;
+      return statusMap.pending;
+    }
+
+    function messengerClass(name) {
+      const key = String(name || "").toLowerCase();
+      if (key.includes("kakao")) return "kakao";
+      if (key.includes("line")) return "line";
+      if (key.includes("wechat")) return "wechat";
+      if (key.includes("whatsapp")) return "whatsapp";
+      return "line";
+    }
+
+    function messengerMark(name) {
+      const key = String(name || "").toLowerCase();
+      if (key.includes("kakao")) return "T";
+      if (key.includes("line")) return "L";
+      if (key.includes("wechat")) return "W";
+      if (key.includes("whatsapp")) return "W";
+      return "M";
+    }
+
+    function scheduleText(item) {
+      const first = [item.date1, item.time1].filter(Boolean).join(" ");
+      const second = [item.date2, item.time2].filter(Boolean).join(" ");
+      return [first && `예약일 1 ${first}`, second && `예약일 2 ${second}`].filter(Boolean).join("\n") || "-";
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function nl2br(value) {
+      return escapeHtml(value).replaceAll("\n", "<br>");
+    }
+
+    function showToast(message) {
+      const toast = qs("#toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => toast.classList.remove("show"), 2600);
+    }
+
+    function setConnection(type, text) {
+      const pill = qs("#connectionPill");
+      pill.classList.toggle("error", type !== "live");
+      qs(".pill-dot", pill).textContent = type === "live" ? "✓" : "!";
+      qs("span:last-child", pill).textContent = text;
+    }
+
+    function combinedRows() {
+      const map = new Map();
+      if (state.dummyEnabled) state.dummyRows.forEach((item) => map.set(item.bookingNo, item));
+      state.firebaseRows.forEach((item) => map.set(item.bookingNo, item));
+      return [...map.values()].sort((a, b) => createdTime(b) - createdTime(a));
+    }
+
+    function viewMatches(item) {
+      if (state.view === "all" || state.view === "dashboard") return true;
+      if (state.view === "active") return !isCompleted(item) && !isFailed(item);
+      if (state.view === "completed") return isCompleted(item);
+      if (state.view === "failed") return isFailed(item);
+      if (state.view === "call") return statusInfo(item).bucket === "call";
+      return true;
+    }
+
+    function summary(rows = state.rows) {
+      const total = rows.length;
+      const today = todayKey();
+      const active = rows.filter((item) => !isCompleted(item) && !isFailed(item)).length;
+      const completed = rows.filter(isCompleted).length;
+      const failed = rows.filter(isFailed).length;
+      const call = rows.filter((item) => statusInfo(item).bucket === "call").length;
+      const todayRows = rows.filter((item) => dateKey(createdValue(item)) === today).length;
+      const revenue = rows.reduce((sum, item) => sum + (item.paymentStatus === "paid" ? Number(item.priceUsd || 0) : 0), 0);
+      return { total, todayRows, active, completed, failed, call, revenue };
+    }
+
+    function percent(value, total) {
+      return total ? Math.round((value / total) * 100) : 0;
+    }
+
+    function refreshFilterOptions() {
+      const categoryValue = qs("#categoryFilter").value;
+      const messengerValue = qs("#messengerFilter").value;
+      const categories = [...new Set(state.rows.map((item) => item.category || "기타"))].sort();
+      const messengers = [...new Set(state.rows.map((item) => item.messenger || "미기재"))].sort();
+      qs("#categoryFilter").innerHTML = `<option value="">예약 유형 전체</option>${categories.map((item) => `<option value="${escapeHtml(item)}">${escapeHtml(item)}</option>`).join("")}`;
+      qs("#messengerFilter").innerHTML = `<option value="">메신저 전체</option>${messengers.map((item) => `<option value="${escapeHtml(item)}">${escapeHtml(item)}</option>`).join("")}`;
+      qs("#categoryFilter").value = categoryValue;
+      qs("#messengerFilter").value = messengerValue;
+    }
+
+    function updateMetrics() {
+      const c = summary();
+      qs("#countAll").textContent = c.total;
+      qs("#countActive").textContent = c.active;
+      qs("#countCompleted").textContent = c.completed;
+      qs("#countFailed").textContent = c.failed;
+      qs("#metricToday").textContent = c.todayRows;
+      qs("#metricActive").textContent = c.active;
+      qs("#metricCompleted").textContent = c.completed;
+      qs("#metricFailed").textContent = c.failed;
+      qs("#metricRevenue").textContent = `$${c.revenue.toFixed(2)}`;
+      qs("#metricTodaySub").textContent = c.todayRows ? "어제 대비 +20%" : "어제 대비 0%";
+      qs("#metricActiveSub").textContent = `전체의 ${percent(c.active, c.total)}%`;
+      qs("#metricCompletedSub").textContent = `전체의 ${percent(c.completed, c.total)}%`;
+      qs("#metricFailedSub").textContent = `전체의 ${percent(c.failed, c.total)}%`;
+      qs("#progressActive").style.width = `${percent(c.active, c.total)}%`;
+      qs("#progressCompleted").style.width = `${percent(c.completed, c.total)}%`;
+      qs("#progressFailed").style.width = `${percent(c.failed, c.total)}%`;
+      qs("#bellCount").textContent = String(c.call + c.failed);
+    }
+
+    function applyFilters() {
+      const keyword = qs("#searchInput").value.trim().toLowerCase();
+      const status = qs("#statusFilter").value;
+      const category = qs("#categoryFilter").value;
+      const messenger = qs("#messengerFilter").value;
+      const from = qs("#dateFrom").value;
+      const to = qs("#dateTo").value;
+      state.filtered = state.rows.filter((item) => {
+        const haystack = [
+          item.bookingNo, item.placeName, item.reservationName, item.fullName,
+          item.messenger, item.messengerId, item.category, item.requestTitle, item.assignee
+        ].join(" ").toLowerCase();
+        const key = dateKey(createdValue(item));
+        const statusLabel = statusInfo(item).label;
+        const resultLabel = resultInfo(item).label;
+        return viewMatches(item)
+          && (!keyword || haystack.includes(keyword))
+          && (!status || statusLabel === status || resultLabel === status)
+          && (!category || item.category === category)
+          && (!messenger || item.messenger === messenger)
+          && (!from || key >= from)
+          && (!to || key <= to);
+      });
+      renderTable();
+    }
+
+    function renderTable() {
+      const rows = qs("#bookingRows");
+      rows.innerHTML = state.filtered.map((item) => {
+        const status = statusInfo(item);
+        const result = resultInfo(item);
+        const selected = item.bookingNo === state.selectedId ? "selected" : "";
+        const logoClass = messengerClass(item.messenger);
+        return `
+          <tr class="${selected}" data-id="${escapeHtml(item.bookingNo)}">
+            <td class="check-cell"><input class="row-check" type="checkbox" aria-label="예약 선택"></td>
+            <td>${escapeHtml(formatDateTime(createdValue(item)))}</td>
+            <td><span class="booking-link">${escapeHtml(item.bookingNo)}</span></td>
+            <td><span class="place-name">${escapeHtml(item.placeName)}</span></td>
+            <td>${escapeHtml(item.category)}</td>
+            <td><span class="messenger"><span class="app-logo ${logoClass}">${escapeHtml(messengerMark(item.messenger))}</span>${escapeHtml(item.messenger)}</span></td>
+            <td>${escapeHtml(item.reservationName)}</td>
+            <td><span class="badge ${status.badge}">${escapeHtml(status.label)}</span></td>
+            <td><span class="badge ${result.badge}">${escapeHtml(result.label)}</span></td>
+            <td>${escapeHtml(item.assignee || "-")}</td>
+          </tr>
+        `;
+      }).join("");
+
+      qs("#footerCount").textContent = `전체 ${state.filtered.length}건`;
+      qs("#emptyState").style.display = state.filtered.length ? "none" : "grid";
+      qsa("#bookingRows tr").forEach((row) => {
+        row.addEventListener("click", (event) => {
+          if (event.target.matches("input")) return;
+          selectRow(row.dataset.id);
+        });
+      });
+
+      if (!state.filtered.some((item) => item.bookingNo === state.selectedId)) {
+        state.selectedId = state.filtered[0]?.bookingNo || "";
+      }
+      renderDetail();
+    }
+
+    function infoRows(rows) {
+      return rows.map(([label, value]) => `<div class="info-row"><span>${escapeHtml(label)}</span><span>${value ? nl2br(value) : "-"}</span></div>`).join("");
+    }
+
+    function selectedItem() {
+      return state.rows.find((item) => item.bookingNo === state.selectedId);
+    }
+
+    function renderDetail() {
+      qsa("#bookingRows tr").forEach((row) => row.classList.toggle("selected", row.dataset.id === state.selectedId));
+      const item = selectedItem();
+      if (!item) {
+        qs("#detailBookingNo").textContent = "예약을 선택하세요";
+        qs("#detailTopBadge").className = "badge gray";
+        qs("#detailTopBadge").textContent = "대기";
+        qs("#detailCreated").textContent = "-";
+        qs("#detailUpdated").textContent = "-";
+        qs("#placeInfo").innerHTML = "";
+        qs("#customerInfo").innerHTML = "";
+        qs("#paymentInfo").innerHTML = "";
+        qs("#progressSteps").innerHTML = "";
+        qs("#resultMessage").value = "";
+        qsa("[data-check]").forEach((input) => { input.checked = false; });
+        return;
+      }
+
+      const status = statusInfo(item);
+      qs("#detailBookingNo").textContent = item.bookingNo;
+      qs("#detailTopBadge").className = `badge ${status.badge}`;
+      qs("#detailTopBadge").textContent = status.label === "전화 대기" ? "접수완료" : status.label;
+      qs("#detailCreated").textContent = formatDateTime(createdValue(item));
+      qs("#detailUpdated").textContent = item.updatedAtClient ? formatDateTime(item.updatedAtClient) : "-";
+      qs("#placeInfo").innerHTML = infoRows([
+        ["상호명", item.placeName],
+        ["유형", item.category],
+        ["예약일 1", [item.date1, item.time1].filter(Boolean).join(" ")],
+        ["예약일 2", [item.date2, item.time2].filter(Boolean).join(" ")],
+        ["인원", item.people],
+        ["요청사항", item.requestTitle || item.procedureName || item.note]
+      ]);
+      qs("#customerInfo").innerHTML = infoRows([
+        ["고객명", item.reservationName],
+        ["메신저", `${item.messenger || "-"} ${item.messengerId ? `(${item.messengerId})` : ""}`],
+        ["메신저 ID", item.messengerId],
+        ["언어", item.language || item.lang || "-"],
+        ["여권명", item.fullName]
+      ]);
+      qs("#paymentInfo").innerHTML = infoRows([
+        ["결제금액", item.priceUsd ? `$${Number(item.priceUsd).toFixed(2)} USD` : "-"],
+        ["결제수단", item.payMethod],
+        ["결제상태", item.paymentStatus === "paid" ? "결제 완료" : item.paymentStatus]
+      ]);
+      renderSteps(item);
+      qsa("[data-check]").forEach((input) => {
+        input.checked = item.checklist.includes(input.dataset.check);
+      });
+      const resultType = ["confirmed", "updated", "failed"].includes(item.resultType) ? item.resultType : "updated";
+      const radio = qs(`input[name="resultType"][value="${resultType}"]`);
+      if (radio) radio.checked = true;
+      qs("#resultMessage").value = item.resultMessage || defaultMessage(resultType, item);
+    }
+
+    function renderSteps(item) {
+      const callDone = isCallDone(item) || item.callStatus === "in_progress";
+      const paid = item.paymentStatus === "paid" || item.paymentStatus === "completed";
+      const resultDone = item.resultType === "confirmed" || item.resultType === "failed" || item.resultStatus === "updated";
+      const active = resultDone ? "result" : paid && callDone ? "result" : callDone ? "payment" : "call";
+      const steps = [
+        { id: "request", label: "요청접수", done: true, sub: formatShortDateTime(createdValue(item)), icon: "check" },
+        { id: "call", label: item.callStatus === "in_progress" ? "통화중" : "전화 대기", done: isCallDone(item), sub: "", icon: "phone" },
+        { id: "payment", label: "결제", done: paid, sub: "", icon: "card" },
+        { id: "result", label: "결과 업데이트", done: resultDone, sub: "", icon: "file" }
+      ];
+      qs("#progressSteps").innerHTML = steps.map((step) => `
+        <div class="step ${step.done ? "done" : ""} ${active === step.id ? "active" : ""}">
+          <div class="step-icon">${stepIcon(step.icon)}</div>
+          <div>${escapeHtml(step.label)}</div>
+          <small>${escapeHtml(step.sub || (step.done ? "완료" : ""))}</small>
+        </div>
+      `).join("");
+    }
+
+    function stepIcon(name) {
+      const icons = {
+        check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m20 6-11 11-5-5"/></svg>',
+        phone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.8 19.8 0 0 1 3.11 5.18 2 2 0 0 1 5.1 3h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.63 2.62a2 2 0 0 1-.45 2.11L9 10.73a16 16 0 0 0 4.27 4.27l1.28-1.28a2 2 0 0 1 2.11-.45c.84.3 1.72.51 2.62.63A2 2 0 0 1 22 16.92Z"/></svg>',
+        card: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>',
+        file: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h6"/></svg>'
+      };
+      return icons[name] || icons.check;
+    }
+
+    function defaultMessage(type, item) {
+      if (type === "confirmed") return "예약이 완료되었습니다. 예약 시간 10분 전까지 도착해 주세요.";
+      if (type === "failed") return "요청하신 일정은 예약이 불가합니다. 가능한 대체 일정을 확인해 안내드리겠습니다.";
+      return item.resultMessage || "결과 업데이트가 필요합니다.";
+    }
+
+    function refreshAll() {
+      state.rows = combinedRows();
+      refreshFilterOptions();
+      updateMetrics();
+      applyFilters();
+      qs("#dummyLabel").textContent = state.dummyEnabled ? "더미데이터 ON" : "더미데이터 OFF";
+    }
+
+    function selectRow(id) {
+      state.selectedId = id;
+      renderDetail();
+    }
+
+    function setView(view) {
+      state.view = view;
+      qsa(".status-tab").forEach((button) => button.classList.toggle("active", button.dataset.view === view));
+      qsa(".nav-btn").forEach((button) => button.classList.toggle("active", button.dataset.nav === view || (view === "all" && button.dataset.nav === "all")));
+      applyFilters();
+      if (window.innerWidth <= 920) qs("#sidebar").classList.remove("open");
+    }
+
+    function patchLocal(item, patch) {
+      const target = item.source === "dummy" ? state.dummyRows : state.firebaseRows;
+      const index = target.findIndex((row) => row.bookingNo === item.bookingNo);
+      if (index >= 0) target[index] = normalize(item.bookingNo, { ...target[index], ...patch }, item.source);
+      refreshAll();
+      state.selectedId = item.bookingNo;
+      renderDetail();
+    }
+
+    async function updateReservation(patch, message) {
+      const item = selectedItem();
+      if (!item) {
+        showToast("예약을 먼저 선택하세요.");
+        return;
+      }
+      const payload = {
+        ...patch,
+        updatedAtClient: new Date().toISOString()
+      };
+      if (item.source === "firebase" && state.firebaseReady && state.firebaseTools && state.db) {
+        const { doc, updateDoc, serverTimestamp } = state.firebaseTools;
+        await updateDoc(doc(state.db, "reservations", item.bookingNo), {
+          ...payload,
+          updatedAtServer: serverTimestamp()
+        });
+      } else {
+        patchLocal(item, payload);
+      }
+      showToast(message);
+    }
+
+    function selectedChecklist() {
+      return qsa("[data-check]").filter((input) => input.checked).map((input) => input.dataset.check);
+    }
+
+    async function callSelected() {
+      const item = selectedItem();
+      if (!item) return showToast("예약을 먼저 선택하세요.");
+      await updateReservation({
+        callStatus: "in_progress",
+        status: "calling",
+        callStartedAt: new Date().toISOString()
+      }, "전화 업무를 시작했습니다.");
+      if (item.placePhone) window.location.href = `tel:${String(item.placePhone).replaceAll(" ", "")}`;
+    }
+
+    async function holdSelected() {
+      await updateReservation({
+        checklist: selectedChecklist(),
+        resultMessage: qs("#resultMessage").value.trim(),
+        status: "hold"
+      }, "보류 상태로 저장했습니다.");
+    }
+
+    async function saveAndNext() {
+      const item = selectedItem();
+      if (!item) return showToast("예약을 먼저 선택하세요.");
+      const resultType = qs('input[name="resultType"]:checked')?.value || "updated";
+      const resultLabel = resultType === "confirmed" ? "예약 완료" : resultType === "failed" ? "예약 불가" : "결과 업데이트 필요";
+      const status = resultType === "confirmed" ? "reservation_completed" : resultType === "failed" ? "failed" : "result_updated";
+      await updateReservation({
+        callStatus: "completed",
+        resultType,
+        resultStatus: "updated",
+        resultLabel,
+        resultMessage: qs("#resultMessage").value.trim() || defaultMessage(resultType, item),
+        checklist: selectedChecklist(),
+        status,
+        resultUpdatedAt: new Date().toISOString()
+      }, "저장하고 고객 조회 화면에 반영했습니다.");
+      const currentIndex = state.filtered.findIndex((row) => row.bookingNo === item.bookingNo);
+      const next = state.filtered[currentIndex + 1] || state.filtered[0];
+      if (next) selectRow(next.bookingNo);
+    }
+
+    async function connectFirebase() {
+      try {
+        const [appSdk, firestoreSdk, analyticsSdk] = await Promise.all([
+          import("https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js"),
+          import("https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js"),
+          import("https://www.gstatic.com/firebasejs/12.13.0/firebase-analytics.js")
+        ]);
+        const app = appSdk.initializeApp(firebaseConfig);
+        state.db = firestoreSdk.getFirestore(app);
+        state.firebaseTools = {
+          collection: firestoreSdk.collection,
+          doc: firestoreSdk.doc,
+          onSnapshot: firestoreSdk.onSnapshot,
+          serverTimestamp: firestoreSdk.serverTimestamp,
+          updateDoc: firestoreSdk.updateDoc
+        };
+        analyticsSdk.isSupported().then((supported) => {
+          if (supported) analyticsSdk.getAnalytics(app);
+        }).catch(() => {});
+        state.unsubscribe = firestoreSdk.onSnapshot(
+          firestoreSdk.collection(state.db, "reservations"),
+          (snapshot) => {
+            state.firebaseReady = true;
+            state.firebaseRows = snapshot.docs.map((entry) => normalize(entry.id, entry.data(), "firebase"));
+            setConnection("live", "Firebase 연결");
+            refreshAll();
+          },
+          (error) => {
+            console.warn("Firebase snapshot error", error);
+            state.firebaseReady = false;
+            setConnection("error", "Firebase 권한 확인 필요");
+            refreshAll();
+          }
+        );
+      } catch (error) {
+        console.warn("Firebase connect error", error);
+        state.firebaseReady = false;
+        setConnection("error", "Firebase 연결 확인 필요");
+        refreshAll();
+      }
+    }
+
+    function showApp() {
+      qs("#loginPage").classList.add("hidden");
+      qs("#app").classList.remove("hidden");
+      state.dummyRows = dummyRows.map((item) => normalize(item.bookingNo, item, "dummy"));
+      qs("#loginTime").textContent = new Intl.DateTimeFormat("ko-KR", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit"
+      }).format(new Date()).replaceAll(". ", "-").replace(".", "");
+      refreshAll();
+      if (!state.unsubscribe) connectFirebase();
+    }
+
+    function logout() {
+      sessionStorage.removeItem("kallCsAuthed");
+      if (state.unsubscribe) {
+        state.unsubscribe();
+        state.unsubscribe = null;
+      }
+      qs("#app").classList.add("hidden");
+      qs("#loginPage").classList.remove("hidden");
+    }
+
+    function bindEvents() {
+      qs("#loginForm").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const ok = qs("#loginId").value.trim() === "admin" && qs("#loginPw").value === "1234";
+        qs("#loginError").style.display = ok ? "none" : "block";
+        if (!ok) return;
+        sessionStorage.setItem("kallCsAuthed", "1");
+        showApp();
+      });
+      qs("#sideLogoutBtn").addEventListener("click", logout);
+      qs("#menuBtn").addEventListener("click", () => qs("#sidebar").classList.toggle("open"));
+      qs("#dummyToggle").addEventListener("change", (event) => {
+        state.dummyEnabled = event.target.checked;
+        refreshAll();
+        showToast(state.dummyEnabled ? "더미데이터를 표시합니다." : "더미데이터를 숨겼습니다.");
+      });
+      qs("#refreshBtn").addEventListener("click", () => {
+        refreshAll();
+        showToast("화면을 새로고침했습니다.");
+      });
+      qs("#syncBtn").addEventListener("click", () => {
+        showToast(state.firebaseReady ? "Firebase 실시간 연결 중입니다." : "Firebase 연결을 다시 확인합니다.");
+        if (!state.firebaseReady) connectFirebase();
+      });
+      qsa(".status-tab").forEach((button) => button.addEventListener("click", () => setView(button.dataset.view)));
+      qsa(".nav-btn").forEach((button) => {
+        button.addEventListener("click", () => {
+          const nav = button.dataset.nav;
+          if (["all", "call"].includes(nav)) setView(nav);
+          else showToast("현재 버전에서는 예약 관리 화면에서 통합 운영합니다.");
+        });
+      });
+      ["searchInput", "statusFilter", "categoryFilter", "messengerFilter", "dateFrom", "dateTo"].forEach((id) => {
+        qs(`#${id}`).addEventListener("input", applyFilters);
+        qs(`#${id}`).addEventListener("change", applyFilters);
+      });
+      qs("#checkAll").addEventListener("change", (event) => {
+        qsa("#bookingRows .row-check").forEach((input) => { input.checked = event.target.checked; });
+      });
+      qsa('input[name="resultType"]').forEach((radio) => {
+        radio.addEventListener("change", () => {
+          const item = selectedItem();
+          if (item) qs("#resultMessage").value = defaultMessage(radio.value, item);
+        });
+      });
+      qs("#callBtn").addEventListener("click", callSelected);
+      qs("#holdBtn").addEventListener("click", holdSelected);
+      qs("#saveNextBtn").addEventListener("click", saveAndNext);
+      qs("#closeDetailBtn").addEventListener("click", () => showToast("상세 패널은 PC 화면에서 고정 표시됩니다."));
+    }
+
+    bindEvents();
+    if (sessionStorage.getItem("kallCsAuthed") === "1") showApp();
+  </script>
+</body>
+</html>
