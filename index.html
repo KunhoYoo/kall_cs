@@ -27,9 +27,12 @@
       --red-soft: #fff0f2;
       --gray-soft: #f1f5f9;
       --shadow: 0 12px 35px rgba(15, 23, 42, .08);
-      --side: 220px;
-      --detail: 430px;
+      --side: 260px;
+      --detail: 420px;
       --radius: 8px;
+      --topbar: 60px;
+      --bottom-safe: 0px;
+      --panel-bottom-gap: 14px;
     }
 
     * { box-sizing: border-box; }
@@ -41,6 +44,7 @@
       background: var(--bg);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Apple SD Gothic Neo", "Noto Sans KR", Arial, sans-serif;
       letter-spacing: 0;
+      overflow: hidden;
     }
 
     button, input, select, textarea { font: inherit; }
@@ -122,7 +126,7 @@
     .filter-input,
     .filter-select,
     .date-input {
-      height: 42px;
+      height: 38px;
       padding: 0 12px;
     }
 
@@ -242,65 +246,207 @@
     .login-stat span { color: rgba(255, 255, 255, .72); font-size: 13px; line-height: 1.5; }
 
     .app {
-      min-height: 100vh;
+      height: 100vh;
+      min-height: 0;
       display: grid;
       grid-template-columns: var(--side) minmax(0, 1fr);
+      overflow: hidden;
+      transition: grid-template-columns .18s ease;
+    }
+
+    .app.sidebar-collapsed {
+      grid-template-columns: 0 minmax(0, 1fr);
+    }
+
+    .app.sidebar-collapsed .sidebar {
+      width: 0;
+      padding-left: 0;
+      padding-right: 0;
+      transform: translateX(-100%);
+      opacity: 0;
+      pointer-events: none;
     }
 
     .sidebar {
       position: sticky;
       top: 0;
       height: 100vh;
+      min-height: 0;
       display: flex;
       flex-direction: column;
-      padding: 24px 10px 14px;
+      padding: 16px 12px 12px;
       color: #fff;
-      background: linear-gradient(180deg, #061f3d, #05182e);
+      background:
+        radial-gradient(circle at 35% 0%, rgba(17, 103, 255, .22), transparent 36%),
+        linear-gradient(180deg, #061f3d, #05182e);
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-gutter: stable;
+      scrollbar-width: thin;
     }
 
     .side-title {
-      padding: 0 18px 28px;
+      padding: 0 8px 12px;
+    }
+
+    .side-brand-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .side-brand-main {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .side-emblem {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      color: #fff;
+      background: var(--blue);
+      font-weight: 950;
+      box-shadow: 0 10px 20px rgba(17, 103, 255, .28);
+      flex: 0 0 auto;
     }
 
     .side-title strong {
       display: block;
-      font-size: 28px;
+      font-size: 24px;
       line-height: 1;
       letter-spacing: 0;
     }
 
     .side-title span {
       display: block;
-      margin-top: 9px;
+      margin-top: 5px;
       color: rgba(255, 255, 255, .72);
-      font-size: 14px;
+      font-size: 12px;
+    }
+
+    .side-live-chip {
+      min-height: 26px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 8px;
+      border: 1px solid rgba(74, 222, 128, .35);
+      border-radius: 999px;
+      color: #bbf7d0;
+      background: rgba(22, 163, 74, .1);
+      font-size: 11px;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .side-live-chip::before {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #4ade80;
+      content: "";
+      box-shadow: 0 0 0 4px rgba(74, 222, 128, .08);
+    }
+
+    .side-status-card {
+      display: grid;
+      gap: 8px;
+      padding: 10px;
+      border: 1px solid rgba(255, 255, 255, .11);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, .07);
+    }
+
+    .side-status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      color: rgba(255, 255, 255, .72);
+      font-size: 11px;
+      line-height: 1.25;
+    }
+
+    .side-status-row b {
+      color: #fff;
+      font-size: 11px;
+      font-weight: 900;
+      text-align: right;
+    }
+
+    .side-status-dot {
+      width: 7px;
+      height: 7px;
+      display: inline-block;
+      margin-right: 5px;
+      border-radius: 999px;
+      background: var(--amber);
+    }
+
+    .side-status-dot.live { background: #4ade80; }
+
+    .side-section-label {
+      margin: 14px 8px 7px;
+      color: rgba(255, 255, 255, .45);
+      font-size: 11px;
+      font-weight: 950;
+      letter-spacing: 0;
     }
 
     .side-nav {
       display: grid;
-      gap: 8px;
+      gap: 5px;
     }
+
+    .nav-btn[data-nav="all"] { order: -2; }
+    .nav-btn[data-nav="dashboard"] { order: -1; }
 
     .nav-btn {
       width: 100%;
-      height: 52px;
+      height: 38px;
       display: flex;
       align-items: center;
-      gap: 13px;
-      padding: 0 14px;
+      gap: 10px;
+      padding: 0 10px;
       border-radius: var(--radius);
       color: rgba(255, 255, 255, .82);
       background: transparent;
       text-align: left;
-      font-size: 15px;
+      font-size: 13px;
       font-weight: 850;
     }
 
     .nav-btn svg {
-      width: 21px;
-      height: 21px;
+      width: 18px;
+      height: 18px;
       stroke-width: 2;
       flex: 0 0 auto;
+    }
+
+    .nav-btn span.nav-label {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .nav-badge {
+      min-width: 24px;
+      height: 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 7px;
+      border-radius: 999px;
+      color: #dbeafe;
+      background: rgba(255, 255, 255, .12);
+      font-size: 11px;
+      font-weight: 950;
     }
 
     .nav-btn.active {
@@ -309,13 +455,141 @@
       box-shadow: 0 12px 22px rgba(17, 103, 255, .26);
     }
 
+    .nav-btn.active .nav-badge {
+      color: var(--blue);
+      background: #fff;
+    }
+
+    .side-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 7px;
+      margin: 0 4px;
+    }
+
+    .side-kpi {
+      min-height: 50px;
+      padding: 8px;
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 9px;
+      background: rgba(255, 255, 255, .06);
+    }
+
+    .side-kpi span {
+      display: block;
+      color: rgba(255, 255, 255, .56);
+      font-size: 11px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .side-kpi strong {
+      display: block;
+      margin-top: 5px;
+      color: #fff;
+      font-size: 20px;
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .side-queue-list {
+      display: grid;
+      gap: 6px;
+      margin: 0 4px;
+    }
+
+    .side-queue-item {
+      display: grid;
+      grid-template-columns: 8px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 8px;
+      min-height: 30px;
+      padding: 6px 9px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .055);
+      color: rgba(255, 255, 255, .78);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .queue-color {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--blue);
+    }
+
+    .queue-color.amber { background: var(--amber); }
+    .queue-color.green { background: var(--green); }
+    .queue-color.red { background: var(--red); }
+    .side-queue-item b { color: #fff; font-size: 12px; }
+
+    .agent-list {
+      display: grid;
+      gap: 7px;
+      margin: 0 4px;
+    }
+
+    .agent-row {
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr) 38px;
+      align-items: center;
+      gap: 8px;
+      min-height: 36px;
+      padding: 5px 8px;
+      border: 1px solid rgba(255, 255, 255, .09);
+      border-radius: 9px;
+      background: rgba(255, 255, 255, .045);
+    }
+
+    .agent-avatar {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      color: #fff;
+      background: rgba(17, 103, 255, .85);
+      font-size: 12px;
+      font-weight: 950;
+    }
+
+    .agent-row strong {
+      display: block;
+      color: #fff;
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .agent-row span {
+      display: block;
+      margin-top: 2px;
+      color: rgba(255, 255, 255, .56);
+      font-size: 11px;
+      line-height: 1.15;
+    }
+
+    .agent-load {
+      height: 5px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .13);
+    }
+
+    .agent-load i {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: #4ade80;
+    }
+
     .side-session {
-      margin: auto 6px 0;
-      padding: 16px 14px;
+      margin: 8px 4px 2px;
+      padding: 8px 10px;
       border-radius: 8px;
       background: rgba(255, 255, 255, .08);
       color: rgba(255, 255, 255, .78);
-      font-size: 13px;
+      font-size: 12px;
     }
 
     .session-line {
@@ -336,18 +610,19 @@
     .side-session hr {
       border: 0;
       border-top: 1px solid rgba(255, 255, 255, .14);
-      margin: 13px 0;
+      margin: 6px 0;
     }
 
     .side-session small {
       display: block;
       color: rgba(255, 255, 255, .64);
-      line-height: 1.55;
+      line-height: 1.35;
     }
 
     .side-logout {
       width: 100%;
-      margin-top: 13px;
+      min-height: 30px;
+      margin-top: 7px;
       color: #fff;
       border-color: rgba(255, 255, 255, .28);
       background: rgba(255, 255, 255, .08);
@@ -355,17 +630,20 @@
 
     .main {
       min-width: 0;
+      height: 100vh;
+      min-height: 0;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
     }
 
     .topbar {
-      height: 76px;
+      height: var(--topbar);
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 18px;
-      padding: 0 28px;
+      padding: 0 22px;
       border-bottom: 1px solid var(--line);
       background: #fff;
       box-shadow: 0 1px 0 rgba(15, 23, 42, .02);
@@ -405,7 +683,7 @@
 
     .top-title h1 {
       margin: 0;
-      font-size: 21px;
+      font-size: 20px;
       letter-spacing: 0;
     }
 
@@ -417,6 +695,7 @@
     }
 
     .top-right {
+      position: relative;
       display: flex;
       align-items: center;
       justify-content: flex-end;
@@ -508,6 +787,8 @@
       display: grid;
       place-items: center;
       color: var(--ink-2);
+      border-radius: 999px;
+      background: transparent;
     }
 
     .bell-badge {
@@ -525,11 +806,19 @@
       font-weight: 900;
     }
 
+    .bell-badge.is-empty {
+      display: none;
+    }
+
     .admin-chip {
       display: flex;
       align-items: center;
       gap: 10px;
       min-width: 132px;
+      min-height: 38px;
+      padding: 0 6px;
+      border-radius: 10px;
+      background: transparent;
     }
 
     .admin-avatar {
@@ -552,21 +841,196 @@
     .admin-chip strong { font-size: 13px; }
     .admin-chip span { color: var(--muted); font-size: 12px; }
 
-    .crm-layout {
-      min-height: calc(100vh - 76px);
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) var(--detail);
-      gap: 26px;
-      padding: 22px 12px 0 32px;
+    .top-menu-wrap {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
     }
 
-    .work-area { min-width: 0; padding-bottom: 24px; }
+    .top-popover {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      z-index: 40;
+      width: 330px;
+      display: none;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 18px 45px rgba(15, 23, 42, .16);
+    }
+
+    .top-popover.open {
+      display: block;
+    }
+
+    .popover-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--line-2);
+      background: #fbfdff;
+    }
+
+    .popover-head strong {
+      color: var(--ink);
+      font-size: 14px;
+    }
+
+    .popover-head button {
+      color: var(--blue);
+      background: transparent;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .popover-list {
+      display: grid;
+      gap: 0;
+      max-height: 300px;
+      overflow: auto;
+    }
+
+    .popover-item {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+      min-height: 58px;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--line-2);
+    }
+
+    .popover-item:last-child {
+      border-bottom: 0;
+    }
+
+    .popover-icon {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      color: var(--blue);
+      background: var(--blue-soft);
+      font-weight: 950;
+    }
+
+    .popover-icon.amber { color: #c56d00; background: var(--amber-soft); }
+    .popover-icon.green { color: #0e9f57; background: var(--green-soft); }
+    .popover-icon.red { color: #e11d48; background: var(--red-soft); }
+
+    .popover-item strong {
+      display: block;
+      color: var(--ink);
+      font-size: 13px;
+      line-height: 1.25;
+    }
+
+    .popover-item span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .popover-time {
+      color: var(--muted);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .admin-popover {
+      width: 300px;
+    }
+
+    .admin-profile {
+      display: grid;
+      grid-template-columns: 44px minmax(0, 1fr);
+      align-items: center;
+      gap: 10px;
+      padding: 14px;
+      border-bottom: 1px solid var(--line-2);
+    }
+
+    .admin-profile .admin-avatar {
+      width: 44px;
+      height: 44px;
+    }
+
+    .admin-profile strong,
+    .admin-profile span {
+      display: block;
+      line-height: 1.3;
+    }
+
+    .admin-profile span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .admin-menu-list {
+      display: grid;
+      padding: 8px;
+    }
+
+    .admin-menu-list button {
+      min-height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+      border-radius: 8px;
+      color: var(--ink-2);
+      background: transparent;
+      font-size: 13px;
+      font-weight: 850;
+      text-align: left;
+    }
+
+    .admin-menu-list button:hover {
+      background: #f6f9fd;
+    }
+
+    .crm-layout {
+      height: calc(100vh - var(--topbar));
+      min-height: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) var(--detail);
+      gap: 14px;
+      padding: 12px 10px 12px 22px;
+      overflow: hidden;
+    }
+
+    .crm-layout.detail-hidden {
+      grid-template-columns: minmax(0, 1fr);
+      padding-right: 32px;
+    }
+
+    .work-area {
+      min-width: 0;
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    #reservationsPage.active {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+
     .top-strip {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      margin-bottom: 24px;
+      margin-bottom: 10px;
     }
 
     .status-tabs {
@@ -580,7 +1044,7 @@
 
     .status-tab {
       min-width: 154px;
-      height: 50px;
+      height: 40px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -631,21 +1095,21 @@
 
     .sync-actions .ghost-btn,
     .sync-actions .primary-btn {
-      height: 48px;
-      padding: 0 18px;
+      height: 40px;
+      padding: 0 14px;
     }
 
     .metric-grid {
       display: grid;
       grid-template-columns: repeat(5, minmax(160px, 1fr));
-      gap: 14px;
-      margin-bottom: 34px;
+      gap: 12px;
+      margin-bottom: 10px;
     }
 
     .metric-card {
-      min-height: 162px;
+      min-height: 102px;
       position: relative;
-      padding: 22px 24px;
+      padding: 13px 16px;
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: #fff;
@@ -663,11 +1127,11 @@
       display: flex;
       align-items: baseline;
       gap: 9px;
-      margin-top: 18px;
+      margin-top: 10px;
     }
 
     .metric-value strong {
-      font-size: 34px;
+      font-size: 26px;
       line-height: 1;
       letter-spacing: 0;
     }
@@ -679,17 +1143,17 @@
 
     .metric-card small {
       display: block;
-      margin-top: 18px;
+      margin-top: 8px;
       color: var(--muted);
       font-size: 13px;
     }
 
     .metric-icon {
       position: absolute;
-      right: 22px;
-      top: 24px;
-      width: 34px;
-      height: 34px;
+      right: 14px;
+      top: 13px;
+      width: 30px;
+      height: 30px;
       display: grid;
       place-items: center;
       border-radius: 9px;
@@ -703,9 +1167,9 @@
 
     .progress-track {
       width: 100%;
-      height: 6px;
+      height: 5px;
       overflow: hidden;
-      margin-top: 16px;
+      margin-top: 8px;
       border-radius: 999px;
       background: #e9eef6;
     }
@@ -722,9 +1186,9 @@
 
     .filter-row {
       display: grid;
-      grid-template-columns: minmax(230px, 1fr) 132px 150px 150px 245px;
-      gap: 10px;
-      margin-bottom: 18px;
+      grid-template-columns: minmax(260px, 1fr) 118px 138px 138px 360px;
+      gap: 8px;
+      margin-bottom: 8px;
     }
 
     .search-wrap {
@@ -745,7 +1209,7 @@
     .search-wrap .filter-input { padding-right: 38px; }
     .date-range {
       display: grid;
-      grid-template-columns: 74px 1fr 20px 1fr;
+      grid-template-columns: 56px minmax(122px, 1fr) 14px minmax(122px, 1fr);
       align-items: center;
       border: 1px solid var(--line);
       border-radius: var(--radius);
@@ -753,9 +1217,9 @@
     }
 
     .date-range span {
-      padding-left: 12px;
+      padding-left: 10px;
       color: var(--ink-2);
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 850;
     }
 
@@ -766,16 +1230,23 @@
     }
 
     .date-range input {
-      height: 40px;
+      height: 36px;
+      min-width: 0;
+      width: 100%;
       border: 0;
+      padding: 0 5px;
       background: transparent;
       outline: none;
       color: var(--ink-2);
-      font-size: 13px;
+      font-size: 12px;
     }
 
     .table-card {
       overflow: hidden;
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: #fff;
@@ -783,9 +1254,10 @@
     }
 
     .table-wrap {
+      flex: 1;
+      min-height: 0;
       overflow: auto;
-      max-height: calc(100vh - 485px);
-      min-height: 520px;
+      height: auto;
     }
 
     table {
@@ -796,7 +1268,7 @@
 
     th, td {
       border-bottom: 1px solid var(--line-2);
-      padding: 13px 13px;
+      padding: 8px 12px;
       text-align: left;
       vertical-align: middle;
     }
@@ -805,7 +1277,7 @@
       position: sticky;
       top: 0;
       z-index: 2;
-      height: 56px;
+      height: 42px;
       color: var(--ink-2);
       background: #fff;
       font-size: 13px;
@@ -814,7 +1286,7 @@
     }
 
     td {
-      height: 64px;
+      height: 46px;
       color: var(--ink);
       font-size: 13px;
       line-height: 1.35;
@@ -890,7 +1362,7 @@
     .badge.gray { color: #64748b; background: #f5f7fa; border-color: #d8e0ea; }
 
     .table-footer {
-      min-height: 58px;
+      min-height: 44px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -925,8 +1397,9 @@
 
     .detail-panel {
       position: sticky;
-      top: 76px;
-      height: calc(100vh - 76px);
+      top: 0;
+      height: 100%;
+      min-height: 0;
       overflow: hidden;
       display: flex;
       flex-direction: column;
@@ -936,9 +1409,11 @@
     }
 
     .detail-scroll {
+      min-height: 0;
       overflow: auto;
-      padding: 20px 18px 0;
+      padding: 10px 12px 6px;
       flex: 1;
+      scrollbar-gutter: stable;
     }
 
     .detail-head {
@@ -946,42 +1421,100 @@
       align-items: flex-start;
       justify-content: space-between;
       gap: 12px;
-      margin-bottom: 14px;
+      margin-bottom: 5px;
     }
 
     .detail-head h2 {
-      margin: 8px 0 0;
-      font-size: 23px;
+      margin: 3px 0 0;
+      font-size: 18px;
       line-height: 1.15;
       letter-spacing: 0;
     }
 
     .detail-title {
       color: var(--ink);
-      font-size: 14px;
+      font-size: 12px;
       font-weight: 950;
     }
 
     .detail-meta {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px 12px;
-      padding-bottom: 13px;
+      gap: 6px 10px;
+      padding: 5px 0 6px;
       border-bottom: 1px solid var(--line);
       color: var(--muted);
-      font-size: 12px;
+      font-size: 11px;
     }
 
     .detail-section {
-      padding: 15px 0;
+      padding: 7px 0;
       border-bottom: 1px solid var(--line-2);
     }
 
     .detail-section h3 {
-      margin: 0 0 12px;
+      margin: 0 0 6px;
       color: var(--ink);
-      font-size: 14px;
+      font-size: 12px;
       font-weight: 950;
+    }
+
+    .detail-section.tight {
+      padding: 6px 0;
+    }
+
+    .compact-info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 5px;
+    }
+
+    .compact-info {
+      min-height: 38px;
+      padding: 6px 7px;
+      border: 1px solid var(--line-2);
+      border-radius: 7px;
+      background: #fbfdff;
+    }
+
+    .compact-info.wide {
+      grid-column: span 2;
+      min-height: 36px;
+    }
+
+    .compact-info span {
+      display: block;
+      margin-bottom: 2px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 900;
+      line-height: 1.15;
+    }
+
+    .compact-info strong {
+      display: -webkit-box;
+      min-width: 0;
+      color: var(--ink-2);
+      font-size: 11.5px;
+      line-height: 1.2;
+      font-weight: 800;
+      overflow: hidden;
+      overflow-wrap: anywhere;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .detail-action-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .detail-action-grid .small-btn {
+      min-height: 28px;
+      font-size: 11.5px;
+      font-weight: 900;
     }
 
     .info-grid {
@@ -1012,23 +1545,23 @@
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       align-items: start;
-      gap: 9px;
-      margin-top: 10px;
+      gap: 5px;
+      margin-top: 4px;
     }
 
     .step {
       position: relative;
       text-align: center;
       color: var(--muted);
-      font-size: 12px;
+      font-size: 10.5px;
       font-weight: 850;
     }
 
     .step::after {
       position: absolute;
-      top: 20px;
-      left: calc(50% + 25px);
-      width: calc(100% - 42px);
+      top: 14px;
+      left: calc(50% + 18px);
+      width: calc(100% - 30px);
       height: 1px;
       background: #d7e0ec;
       content: "";
@@ -1037,11 +1570,11 @@
     .step:last-child::after { display: none; }
 
     .step-icon {
-      width: 42px;
-      height: 42px;
+      width: 30px;
+      height: 30px;
       display: grid;
       place-items: center;
-      margin: 0 auto 7px;
+      margin: 0 auto 3px;
       border: 1px solid var(--line);
       border-radius: 999px;
       color: #64748b;
@@ -1049,8 +1582,8 @@
     }
 
     .step-icon svg {
-      width: 20px;
-      height: 20px;
+      width: 15px;
+      height: 15px;
       stroke-width: 2.2;
     }
 
@@ -1074,24 +1607,26 @@
 
     .step small {
       display: block;
-      margin-top: 3px;
+      margin-top: 2px;
       color: var(--muted);
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 750;
     }
 
     .checklist {
       display: grid;
-      gap: 6px;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px 8px;
       color: var(--ink-2);
-      font-size: 13px;
+      font-size: 11px;
     }
 
     .checklist label {
       display: flex;
       align-items: center;
-      gap: 8px;
-      min-height: 23px;
+      gap: 6px;
+      min-height: 18px;
+      line-height: 1.18;
     }
 
     .checklist input { accent-color: var(--blue); }
@@ -1099,10 +1634,10 @@
     .radio-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 15px;
-      margin-bottom: 10px;
+      gap: 6px 10px;
+      margin-bottom: 6px;
       color: var(--ink-2);
-      font-size: 13px;
+      font-size: 11px;
     }
 
     .radio-row label {
@@ -1116,13 +1651,15 @@
 
     .result-text {
       width: 100%;
-      min-height: 74px;
-      padding: 10px 11px;
+      min-height: 42px;
+      max-height: 46px;
+      padding: 7px 9px;
       border: 1px solid var(--line);
       border-radius: var(--radius);
       resize: vertical;
       outline: none;
       line-height: 1.5;
+      font-size: 11.5px;
     }
 
     .result-text:focus {
@@ -1133,16 +1670,19 @@
     .detail-footer {
       display: grid;
       grid-template-columns: 1fr 86px 1.35fr;
-      gap: 8px;
-      padding: 12px 14px;
-      border-top: 1px solid var(--line);
+      gap: 6px;
+      margin: 0 12px var(--panel-bottom-gap);
+      padding: 6px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
       background: #fff;
+      box-shadow: 0 -6px 22px rgba(15, 23, 42, .08);
     }
 
     .detail-footer .primary-btn,
     .detail-footer .secondary-btn,
     .detail-footer .ghost-btn {
-      height: 44px;
+      height: 34px;
       padding: 0 12px;
     }
 
@@ -1189,6 +1729,302 @@
       font-size: 16px;
     }
 
+    .page-view {
+      display: none;
+      height: 100%;
+      min-height: 0;
+      overflow: auto;
+    }
+
+    .page-view.active {
+      display: block;
+    }
+
+    .page-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .page-head h2 {
+      margin: 0;
+      color: var(--ink);
+      font-size: 24px;
+      letter-spacing: 0;
+    }
+
+    .page-head p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .page-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      box-shadow: 0 10px 26px rgba(15, 23, 42, .04);
+    }
+
+    .page-card.pad {
+      padding: 18px;
+    }
+
+    .page-card h3 {
+      margin: 0 0 12px;
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 950;
+    }
+
+    .dashboard-grid,
+    .report-grid,
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .dashboard-wide,
+    .report-wide,
+    .settings-wide {
+      grid-column: span 2;
+    }
+
+    .mini-table {
+      width: 100%;
+      min-width: 0;
+      border-collapse: collapse;
+    }
+
+    .mini-table th,
+    .mini-table td {
+      height: 42px;
+      padding: 9px 10px;
+      border-bottom: 1px solid var(--line-2);
+      color: var(--ink-2);
+      font-size: 12px;
+      text-align: left;
+    }
+
+    .mini-table th {
+      color: var(--muted);
+      background: #fbfdff;
+      font-weight: 950;
+    }
+
+    .mini-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .activity-list,
+    .message-list,
+    .settings-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .activity-item,
+    .message-item,
+    .settings-item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      min-height: 48px;
+      padding: 10px 12px;
+      border: 1px solid var(--line-2);
+      border-radius: 8px;
+      background: #fbfdff;
+    }
+
+    .activity-item strong,
+    .message-item strong,
+    .settings-item strong {
+      display: block;
+      color: var(--ink);
+      font-size: 13px;
+      line-height: 1.25;
+    }
+
+    .activity-item span,
+    .message-item span,
+    .settings-item span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .chart-bars {
+      display: grid;
+      gap: 10px;
+    }
+
+    .chart-row {
+      display: grid;
+      grid-template-columns: 86px minmax(0, 1fr) 42px;
+      align-items: center;
+      gap: 10px;
+      color: var(--ink-2);
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .chart-track {
+      height: 9px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e9eef6;
+    }
+
+    .chart-track i {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--blue);
+    }
+
+    .chart-track i.green { background: var(--green); }
+    .chart-track i.amber { background: var(--amber); }
+    .chart-track i.red { background: var(--red); }
+
+    .template-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .template-card {
+      min-height: 112px;
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .template-card strong {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 13px;
+    }
+
+    .template-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .users-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.8fr) minmax(320px, .9fr);
+      gap: 14px;
+      align-items: start;
+    }
+
+    .users-table-card {
+      min-width: 0;
+    }
+
+    .user-table th:last-child,
+    .user-table td:last-child {
+      width: 150px;
+      text-align: right;
+    }
+
+    .user-form-card {
+      position: sticky;
+      top: 0;
+    }
+
+    .user-form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .user-form-grid .field.full {
+      grid-column: 1 / -1;
+    }
+
+    .form-actions,
+    .inline-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .form-actions {
+      margin-top: 12px;
+    }
+
+    .inline-actions .small-btn,
+    .inline-actions .danger-btn {
+      min-height: 28px;
+      padding: 0 9px;
+      font-size: 11px;
+    }
+
+    .permission-note {
+      margin-bottom: 12px;
+      padding: 10px 12px;
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      color: #1d4ed8;
+      background: #eff6ff;
+      font-size: 12px;
+      font-weight: 850;
+      line-height: 1.45;
+    }
+
+    .role-summary-grid {
+      display: grid;
+      gap: 8px;
+    }
+
+    .role-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 24px;
+      padding: 0 9px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #f8fafc;
+      color: var(--ink-2);
+      font-size: 11px;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .role-chip.admin {
+      color: #0956df;
+      border-color: #bfd8ff;
+      background: var(--blue-soft);
+    }
+
+    .role-chip.agent {
+      color: #0a8f4c;
+      border-color: #b9efd0;
+      background: var(--green-soft);
+    }
+
+    .role-chip.viewer {
+      color: #c56d00;
+      border-color: #ffd996;
+      background: var(--amber-soft);
+    }
+
+    .detail-panel.panel-hidden {
+      display: none;
+    }
+
     @media (max-width: 1580px) {
       .metric-grid { grid-template-columns: repeat(3, minmax(160px, 1fr)); }
       .filter-row { grid-template-columns: minmax(220px, 1fr) 140px 140px 140px; }
@@ -1210,6 +2046,8 @@
       }
       .detail-footer { border-radius: 0 0 var(--radius) var(--radius); }
       .table-wrap { max-height: none; }
+      .users-grid { grid-template-columns: 1fr; }
+      .user-form-card { position: static; }
     }
 
     @media (max-width: 920px) {
@@ -1299,45 +2137,75 @@
   <section id="app" class="app hidden">
     <aside id="sidebar" class="sidebar">
       <div class="side-title">
-        <strong>Kall CS</strong>
-        <span>고객 지원 시스템</span>
+        <div class="side-brand-row">
+          <div class="side-brand-main">
+            <div class="side-emblem">K</div>
+            <div>
+              <strong>Kall CS</strong>
+              <span>고객 지원 시스템</span>
+            </div>
+          </div>
+          <div class="side-live-chip">LIVE</div>
+        </div>
+        <div class="side-status-card">
+          <div class="side-status-row"><span><i id="sideFirebaseDot" class="side-status-dot"></i>Firebase</span><b id="sideFirebaseStatus">연결 준비</b></div>
+        </div>
       </div>
+      <div class="side-section-label">WORKSPACE</div>
       <nav class="side-nav" aria-label="CS 메뉴">
         <button class="nav-btn" type="button" data-nav="dashboard">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>
-          대시보드
+          <span class="nav-label">대시보드</span><span id="navDashboardCount" class="nav-badge">0</span>
         </button>
         <button class="nav-btn active" type="button" data-nav="all">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M7 3v3"/><path d="M17 3v3"/><path d="M4 8h16"/><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 12h3"/><path d="M8 16h5"/></svg>
-          예약 관리
+          <span class="nav-label">예약 관리</span><span id="navAllCount" class="nav-badge">0</span>
         </button>
         <button class="nav-btn" type="button" data-nav="call">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.8 19.8 0 0 1 3.11 5.18 2 2 0 0 1 5.1 3h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.63 2.62a2 2 0 0 1-.45 2.11L9 10.73a16 16 0 0 0 4.27 4.27l1.28-1.28a2 2 0 0 1 2.11-.45c.84.3 1.72.51 2.62.63A2 2 0 0 1 22 16.92Z"/></svg>
-          전화 업무
+          <span class="nav-label">전화 업무</span><span id="navCallCount" class="nav-badge">0</span>
         </button>
         <button class="nav-btn" type="button" data-nav="customers">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          고객 관리
+          <span class="nav-label">고객 관리</span><span id="navCustomerCount" class="nav-badge">0</span>
         </button>
         <button class="nav-btn" type="button" data-nav="reports">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3v18h18"/><rect x="7" y="11" width="3" height="6" rx="1"/><rect x="13" y="7" width="3" height="10" rx="1"/><rect x="19" y="4" width="3" height="13" rx="1" transform="translate(-2)"/></svg>
-          통계/리포트
+          <span class="nav-label">통계/리포트</span><span class="nav-badge">월</span>
         </button>
         <button class="nav-btn" type="button" data-nav="messages">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
-          메시지 발송
+          <span class="nav-label">메시지 발송</span><span id="navMessageCount" class="nav-badge">0</span>
         </button>
         <button class="nav-btn" type="button" data-nav="settings">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 15.5A3.5 3.5 0 1 0 12 8a3.5 3.5 0 0 0 0 7.5Z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06A2 2 0 1 1 7.04 4.3l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.08a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.2.6.76 1 1.39 1H21a2 2 0 1 1 0 4h-.09c-.63 0-1.19.4-1.51 1Z"/></svg>
-          설정
+          <span class="nav-label">설정</span><span class="nav-badge">CS</span>
         </button>
-        <button class="nav-btn" type="button" data-nav="users">
+        <button class="nav-btn admin-only" type="button" data-nav="users">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-5"/></svg>
-          사용자 관리
+          <span class="nav-label">사용자 관리</span><span id="navUserCount" class="nav-badge">3</span>
         </button>
       </nav>
+      <div class="side-section-label">TODAY QUEUE</div>
+      <div class="side-kpi-grid">
+        <div class="side-kpi"><span>오늘 접수</span><strong id="sideTodayCount">0</strong></div>
+        <div class="side-kpi"><span>진행중</span><strong id="sideActiveCount">0</strong></div>
+        <div class="side-kpi"><span>예약 완료</span><strong id="sideCompletedCount">0</strong></div>
+        <div class="side-kpi"><span>주의 필요</span><strong id="sideFailedCount">0</strong></div>
+      </div>
+      <div class="side-section-label">OPERATION QUEUE</div>
+      <div class="side-queue-list">
+        <div class="side-queue-item"><i class="queue-color amber"></i><span>전화 대기</span><b id="sideCallWaiting">0</b></div>
+        <div class="side-queue-item"><i class="queue-color"></i><span>결과 대기</span><b id="sideResultWaiting">0</b></div>
+        <div class="side-queue-item"><i class="queue-color red"></i><span>미배정</span><b id="sideUnassigned">0</b></div>
+      </div>
+      <div class="side-section-label">AGENT STATUS</div>
+      <div class="agent-list">
+        <div class="agent-row"><div class="agent-avatar">김</div><div><strong>김현수</strong><span id="agentKimText">배정 0건</span></div><div class="agent-load"><i id="agentKimLoad" style="width:0%"></i></div></div>
+        <div class="agent-row"><div class="agent-avatar">이</div><div><strong>이수진</strong><span id="agentLeeText">배정 0건</span></div><div class="agent-load"><i id="agentLeeLoad" style="width:0%"></i></div></div>
+      </div>
       <div class="side-session">
-        <div class="session-line"><span class="session-dot"></span> 로그인: admin</div>
+        <div class="session-line"><span class="session-dot"></span> 로그인: <span id="sideLoginUser">admin</span></div>
         <hr>
         <small>마지막 접속<br><span id="loginTime">2026-05-11 09:10</span></small>
         <button id="sideLogoutBtn" class="ghost-btn side-logout" type="button">로그아웃</button>
@@ -1360,20 +2228,49 @@
             <span id="dummyLabel">더미데이터 ON</span>
           </label>
           <span id="connectionPill" class="connection-pill error"><span class="pill-dot">!</span><span>Firebase 연결 준비 중</span></span>
-          <div class="bell" aria-label="알림">
-            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 7h18s-3 0-3-7"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-            <span id="bellCount" class="bell-badge">0</span>
+          <div class="top-menu-wrap">
+            <button id="notificationBtn" class="bell" type="button" aria-label="알림 열기" aria-expanded="false">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 7h18s-3 0-3-7"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              <span id="bellCount" class="bell-badge">0</span>
+            </button>
+            <div id="notificationPanel" class="top-popover" role="dialog" aria-label="알림 목록">
+              <div class="popover-head">
+                <strong>운영 알림</strong>
+                <button id="markReadBtn" type="button">모두 확인</button>
+              </div>
+              <div id="notificationList" class="popover-list"></div>
+            </div>
           </div>
-          <div class="admin-chip">
-            <div class="admin-avatar">A</div>
-            <div><strong>관리자</strong><span>admin</span></div>
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+          <div class="top-menu-wrap">
+            <button id="adminMenuBtn" class="admin-chip" type="button" aria-label="관리자 메뉴 열기" aria-expanded="false">
+              <div id="topAdminAvatar" class="admin-avatar">A</div>
+              <div><strong id="topAdminName">관리자</strong><span id="topAdminId">admin</span></div>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div id="adminPanel" class="top-popover admin-popover" role="dialog" aria-label="관리자 메뉴">
+              <div class="admin-profile">
+                <div id="panelAdminAvatar" class="admin-avatar">A</div>
+                <div>
+                  <strong id="panelAdminName">관리자</strong>
+                  <span id="panelAdminRole">admin · Super Admin</span>
+                  <span id="autoRefreshStatus">자동 새로고침 10초</span>
+                </div>
+              </div>
+              <div class="admin-menu-list">
+                <button type="button" data-admin-action="profile">내 계정 <span id="adminProfileId">admin</span></button>
+                <button class="admin-only" type="button" data-admin-action="permissions">권한 관리 <span id="adminPermissionCount">3명</span></button>
+                <button type="button" data-admin-action="refresh">지금 새로고침 <span>10초 자동</span></button>
+                <button type="button" data-admin-action="dummy">더미데이터 전환 <span id="adminDummyState">ON</span></button>
+                <button type="button" data-admin-action="logout">로그아웃 <span>종료</span></button>
+              </div>
+            </div>
           </div>
         </div>
       </header>
 
       <div class="crm-layout">
         <section class="work-area">
+          <section id="reservationsPage" class="page-view active">
           <div class="top-strip">
             <div id="statusTabs" class="status-tabs" aria-label="예약 상태">
               <button class="status-tab active" type="button" data-view="all">전체 <span id="countAll" class="tab-count">0</span></button>
@@ -1502,6 +2399,229 @@
               </div>
             </div>
           </div>
+          </section>
+
+          <section id="dashboardPage" class="page-view">
+            <div class="page-head">
+              <div>
+                <h2>대시보드</h2>
+                <p>오늘의 예약 흐름, 처리 병목, 담당자 업무량을 한눈에 확인합니다.</p>
+              </div>
+              <button class="ghost-btn" type="button" data-page-refresh>대시보드 갱신</button>
+            </div>
+            <div class="dashboard-grid">
+              <div class="page-card pad dashboard-wide">
+                <h3>실시간 예약 흐름</h3>
+                <div id="dashboardBars" class="chart-bars"></div>
+              </div>
+              <div class="page-card pad">
+                <h3>운영 알림</h3>
+                <div id="dashboardAlerts" class="activity-list"></div>
+              </div>
+              <div class="page-card pad dashboard-wide">
+                <h3>최근 접수 예약</h3>
+                <table class="mini-table">
+                  <thead><tr><th>예약번호</th><th>상호</th><th>고객</th><th>상태</th></tr></thead>
+                  <tbody id="dashboardLatest"></tbody>
+                </table>
+              </div>
+              <div class="page-card pad">
+                <h3>담당자 업무량</h3>
+                <div id="dashboardAgents" class="chart-bars"></div>
+              </div>
+            </div>
+          </section>
+
+          <section id="callPage" class="page-view">
+            <div class="page-head">
+              <div>
+                <h2>전화 업무</h2>
+                <p>전화 대기, 통화중, 전화 완료 후 결과 대기 건을 우선순위로 관리합니다.</p>
+              </div>
+              <button id="callPageNextBtn" class="primary-btn" type="button">다음 전화건 열기</button>
+            </div>
+            <div class="dashboard-grid">
+              <div class="page-card pad dashboard-wide">
+                <h3>전화 큐</h3>
+                <table class="mini-table">
+                  <thead><tr><th>예약번호</th><th>상호</th><th>고객</th><th>연락 채널</th><th>상태</th></tr></thead>
+                  <tbody id="callQueueTable"></tbody>
+                </table>
+              </div>
+              <div class="page-card pad">
+                <h3>통화 스크립트</h3>
+                <div id="callScriptList" class="settings-list"></div>
+              </div>
+              <div class="page-card pad">
+                <h3>전화 결과 빠른 처리</h3>
+                <div id="callQuickActions" class="message-list"></div>
+              </div>
+            </div>
+          </section>
+
+          <section id="customersPage" class="page-view">
+            <div class="page-head">
+              <div>
+                <h2>고객 관리</h2>
+                <p>예약자별 연락 채널, 언어, 최근 예약 상태를 정리합니다.</p>
+              </div>
+            </div>
+            <div class="dashboard-grid">
+              <div class="page-card pad dashboard-wide">
+                <h3>고객 목록</h3>
+                <table class="mini-table">
+                  <thead><tr><th>고객명</th><th>메신저</th><th>최근 예약</th><th>상태</th><th>예약수</th></tr></thead>
+                  <tbody id="customerTable"></tbody>
+                </table>
+              </div>
+              <div class="page-card pad">
+                <h3>고객 세그먼트</h3>
+                <div id="customerSegments" class="chart-bars"></div>
+              </div>
+            </div>
+          </section>
+
+          <section id="reportsPage" class="page-view">
+            <div class="page-head">
+              <div>
+                <h2>통계/리포트</h2>
+                <p>예약 유형, 메신저, 처리 결과별 성과를 집계합니다.</p>
+              </div>
+            </div>
+            <div class="report-grid">
+              <div class="page-card pad report-wide">
+                <h3>유형별 예약 분포</h3>
+                <div id="categoryReportBars" class="chart-bars"></div>
+              </div>
+              <div class="page-card pad">
+                <h3>메신저별 접수</h3>
+                <div id="messengerReportBars" class="chart-bars"></div>
+              </div>
+              <div class="page-card pad report-wide">
+                <h3>처리 결과 리포트</h3>
+                <table class="mini-table">
+                  <thead><tr><th>구분</th><th>건수</th><th>비율</th><th>운영 메모</th></tr></thead>
+                  <tbody id="resultReportTable"></tbody>
+                </table>
+              </div>
+              <div class="page-card pad">
+                <h3>매출 요약</h3>
+                <div id="revenueReport" class="activity-list"></div>
+              </div>
+            </div>
+          </section>
+
+          <section id="messagesPage" class="page-view">
+            <div class="page-head">
+              <div>
+                <h2>메시지 발송</h2>
+                <p>예약 결과 안내와 재연락 요청 메시지를 채널별로 관리합니다.</p>
+              </div>
+              <button class="primary-btn" type="button" data-page-refresh>템플릿 동기화</button>
+            </div>
+            <div class="dashboard-grid">
+              <div class="page-card pad dashboard-wide">
+                <h3>발송 대기</h3>
+                <div id="messageQueue" class="message-list"></div>
+              </div>
+              <div class="page-card pad">
+                <h3>메시지 템플릿</h3>
+                <div id="messageTemplates" class="template-grid"></div>
+              </div>
+            </div>
+          </section>
+
+          <section id="settingsPage" class="page-view">
+            <div class="page-head">
+              <div>
+                <h2>설정</h2>
+                <p>Firebase 컬렉션, 결과 반영 필드, 운영 정책을 확인합니다.</p>
+              </div>
+            </div>
+            <div class="settings-grid">
+              <div class="page-card pad settings-wide">
+                <h3>Firebase 연동 설정</h3>
+                <div id="firebaseSettings" class="settings-list"></div>
+              </div>
+              <div class="page-card pad">
+                <h3>운영 정책</h3>
+                <div id="policySettings" class="settings-list"></div>
+              </div>
+              <div class="page-card pad settings-wide">
+                <h3>Kall 페이지 반영 필드</h3>
+                <div id="fieldSettings" class="settings-list"></div>
+              </div>
+              <div class="page-card pad">
+                <h3>출시 전 체크</h3>
+                <div id="launchChecklist" class="checklist"></div>
+              </div>
+            </div>
+          </section>
+
+          <section id="usersPage" class="page-view">
+            <div class="page-head">
+              <div>
+                <h2>사용자 관리</h2>
+                <p>관리자만 접근 가능한 계정, 권한, 상담자 배정을 관리합니다.</p>
+              </div>
+              <button id="userCreateBtn" class="primary-btn" type="button">사용자 추가</button>
+            </div>
+            <div id="userAdminNotice" class="permission-note">ADMIN 권한 계정만 사용자 추가, 편집, 삭제가 가능합니다. 운영 배포 시 Firebase Auth와 Firestore Rules로 동일한 권한 정책을 서버에서도 제한해야 합니다.</div>
+            <div class="users-grid">
+              <div class="page-card pad users-table-card">
+                <h3>사용자 목록</h3>
+                <table class="mini-table user-table">
+                  <thead><tr><th>이름</th><th>아이디</th><th>권한</th><th>상태</th><th>담당 건수</th><th>처리</th></tr></thead>
+                  <tbody id="userTable"></tbody>
+                </table>
+              </div>
+              <form id="userForm" class="page-card pad user-form-card">
+                <h3 id="userFormTitle">사용자 추가</h3>
+                <input id="userEditKey" type="hidden">
+                <div class="user-form-grid">
+                  <div class="field">
+                    <label for="userName">이름</label>
+                    <input id="userName" required placeholder="예: 김현수">
+                  </div>
+                  <div class="field">
+                    <label for="userId">아이디</label>
+                    <input id="userId" required autocomplete="off" placeholder="예: kim.cs">
+                  </div>
+                  <div class="field">
+                    <label for="userPassword">비밀번호</label>
+                    <input id="userPassword" type="password" autocomplete="new-password" placeholder="변경 시 입력">
+                  </div>
+                  <div class="field">
+                    <label for="userRole">권한</label>
+                    <select id="userRole">
+                      <option value="AGENT">CS Agent</option>
+                      <option value="ADMIN">ADMIN</option>
+                      <option value="VIEWER">Viewer</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="userStatus">상태</label>
+                    <select id="userStatus">
+                      <option value="active">활성</option>
+                      <option value="paused">중지</option>
+                    </select>
+                  </div>
+                  <div class="field full">
+                    <label for="userMemo">메모</label>
+                    <textarea id="userMemo" placeholder="담당 업무, 교대 시간, 권한 변경 사유"></textarea>
+                  </div>
+                </div>
+                <div class="form-actions">
+                  <button id="userCancelBtn" class="ghost-btn" type="button">초기화</button>
+                  <button class="primary-btn" type="submit">저장</button>
+                </div>
+              </form>
+              <div class="page-card pad">
+                <h3>권한 그룹</h3>
+                <div id="roleList" class="settings-list"></div>
+              </div>
+            </div>
+          </section>
         </section>
 
         <aside class="detail-panel" aria-label="예약 상세 정보">
@@ -1524,27 +2644,21 @@
               <span>마지막 업데이트&nbsp;&nbsp;<b id="detailUpdated">-</b></span>
             </div>
 
-            <section class="detail-section">
-              <h3>상호 및 예약 정보</h3>
-              <div id="placeInfo" class="info-grid"></div>
+            <section class="detail-section tight">
+              <h3>예약 핵심 정보</h3>
+              <div id="compactInfo" class="compact-info-grid"></div>
+              <div class="detail-action-grid">
+                <button id="startCallBtn" class="small-btn" type="button">전화 시작</button>
+                <button id="completeCallBtn" class="small-btn" type="button">전화 완료</button>
+              </div>
             </section>
 
-            <section class="detail-section">
-              <h3>고객 정보</h3>
-              <div id="customerInfo" class="info-grid"></div>
-            </section>
-
-            <section class="detail-section">
-              <h3>결제 정보</h3>
-              <div id="paymentInfo" class="info-grid"></div>
-            </section>
-
-            <section class="detail-section">
+            <section class="detail-section tight">
               <h3>진행 상태</h3>
               <div id="progressSteps" class="progress-steps"></div>
             </section>
 
-            <section class="detail-section">
+            <section class="detail-section tight">
               <h3>전화 체크리스트</h3>
               <div class="checklist">
                 <label><input type="checkbox" data-check="shop_contacted"> 1. 상업체 전화 연결</label>
@@ -1555,7 +2669,7 @@
               </div>
             </section>
 
-            <section class="detail-section" style="border-bottom:0;">
+            <section class="detail-section tight" style="border-bottom:0;">
               <h3>결과 업데이트</h3>
               <div class="radio-row">
                 <label><input type="radio" name="resultType" value="confirmed"> 예약 완료</label>
@@ -1597,6 +2711,7 @@
     const qsa = (selector, scope = document) => Array.from(scope.querySelectorAll(selector));
 
     const state = {
+      page: "reservations",
       view: "all",
       selectedId: "",
       dummyEnabled: true,
@@ -1607,8 +2722,45 @@
       db: null,
       firebaseTools: null,
       firebaseReady: false,
-      unsubscribe: null
+      unsubscribe: null,
+      autoRefreshTimer: null,
+      notificationsRead: false,
+      notificationSignature: "",
+      lastRefreshAt: null,
+      users: [],
+      currentUser: null,
+      editingUserId: ""
     };
+
+    const USER_STORAGE_KEY = "kallCsUsers";
+    const SESSION_USER_KEY = "kallCsUserId";
+
+    const defaultUsers = [
+      {
+        id: "admin",
+        password: "1234",
+        name: "관리자",
+        role: "ADMIN",
+        status: "active",
+        memo: "전체 예약, 설정, 사용자 관리 권한"
+      },
+      {
+        id: "kim.cs",
+        password: "1111",
+        name: "김현수",
+        role: "AGENT",
+        status: "active",
+        memo: "전화 업무 및 결과 업데이트 담당"
+      },
+      {
+        id: "lee.cs",
+        password: "1111",
+        name: "이수진",
+        role: "AGENT",
+        status: "active",
+        memo: "예약 완료 처리 및 고객 메시지 담당"
+      }
+    ];
 
     const dummyRows = [
       {
@@ -1898,6 +3050,81 @@
       failed: { label: "취소/실패", badge: "red" }
     };
 
+    function loadUsers() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(USER_STORAGE_KEY) || "[]");
+        if (Array.isArray(saved) && saved.length) {
+          return saved.map((user) => ({ ...user, status: user.status || "active" }));
+        }
+      } catch (error) {
+        console.warn("User storage parse error", error);
+      }
+      localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(defaultUsers));
+      return defaultUsers.map((user) => ({ ...user }));
+    }
+
+    function saveUsers() {
+      localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(state.users));
+      setText("#navUserCount", state.users.length);
+      setText("#adminPermissionCount", `${state.users.length}명`);
+    }
+
+    function roleLabel(role) {
+      if (role === "ADMIN") return "Super Admin";
+      if (role === "AGENT") return "CS Agent";
+      return "Viewer";
+    }
+
+    function roleClass(role) {
+      if (role === "ADMIN") return "admin";
+      if (role === "AGENT") return "agent";
+      return "viewer";
+    }
+
+    function statusLabel(status) {
+      return status === "paused" ? "중지" : "활성";
+    }
+
+    function userInitial(user) {
+      return String(user?.name || user?.id || "A").trim().slice(0, 1).toUpperCase();
+    }
+
+    function isAdminUser(user = state.currentUser) {
+      return user?.role === "ADMIN" || user?.id === "admin";
+    }
+
+    function findUser(id) {
+      return state.users.find((user) => user.id === id);
+    }
+
+    function setCurrentUser(user) {
+      state.currentUser = user;
+      const name = user?.name || "관리자";
+      const id = user?.id || "admin";
+      const initial = userInitial(user);
+      setText("#sideLoginUser", id);
+      setText("#topAdminName", name);
+      setText("#topAdminId", id);
+      setText("#panelAdminName", name);
+      setText("#panelAdminRole", `${id} · ${roleLabel(user?.role || "ADMIN")}`);
+      setText("#adminProfileId", id);
+      setText("#topAdminAvatar", initial);
+      setText("#panelAdminAvatar", initial);
+      applyPermissionUi();
+    }
+
+    function applyPermissionUi() {
+      const admin = isAdminUser();
+      qsa(".admin-only").forEach((node) => node.classList.toggle("hidden", !admin));
+      const form = qs("#userForm");
+      if (form) qsa("input, select, textarea, button", form).forEach((node) => { node.disabled = !admin; });
+      if (!admin && state.page === "users") {
+        setNavPage("all");
+      }
+    }
+
+    state.users = loadUsers();
+
     function normalize(docId, data, source = "firebase") {
       const bookingNo = data.bookingNo || docId || "";
       return {
@@ -2051,6 +3278,9 @@
       pill.classList.toggle("error", type !== "live");
       qs(".pill-dot", pill).textContent = type === "live" ? "✓" : "!";
       qs("span:last-child", pill).textContent = text;
+      setText("#sideFirebaseStatus", type === "live" ? "연결됨" : "확인 필요");
+      const dot = qs("#sideFirebaseDot");
+      if (dot) dot.classList.toggle("live", type === "live");
     }
 
     function combinedRows() {
@@ -2098,6 +3328,11 @@
 
     function updateMetrics() {
       const c = summary();
+      const callWaiting = state.rows.filter((item) => statusInfo(item).label === "전화 대기").length;
+      const resultWaiting = state.rows.filter((item) => resultInfo(item).label === "결과 업데이트").length;
+      const unassigned = state.rows.filter((item) => !item.assignee).length;
+      const kimCount = state.rows.filter((item) => item.assignee === "김현수").length;
+      const leeCount = state.rows.filter((item) => item.assignee === "이수진").length;
       qs("#countAll").textContent = c.total;
       qs("#countActive").textContent = c.active;
       qs("#countCompleted").textContent = c.completed;
@@ -2114,7 +3349,84 @@
       qs("#progressActive").style.width = `${percent(c.active, c.total)}%`;
       qs("#progressCompleted").style.width = `${percent(c.completed, c.total)}%`;
       qs("#progressFailed").style.width = `${percent(c.failed, c.total)}%`;
-      qs("#bellCount").textContent = String(c.call + c.failed);
+      const notificationCount = callWaiting + resultWaiting + unassigned + c.failed;
+      const notificationSignature = [callWaiting, resultWaiting, unassigned, c.failed].join("|");
+      if (state.notificationSignature && state.notificationSignature !== notificationSignature) {
+        state.notificationsRead = false;
+      }
+      state.notificationSignature = notificationSignature;
+      updateBellBadge(notificationCount);
+      setText("#navDashboardCount", c.total);
+      setText("#navAllCount", c.total);
+      setText("#navCallCount", c.call);
+      setText("#navCustomerCount", c.total);
+      setText("#navMessageCount", resultWaiting);
+      setText("#navUserCount", state.users.length);
+      setText("#adminPermissionCount", `${state.users.length}명`);
+      setText("#sideTodayCount", c.todayRows);
+      setText("#sideActiveCount", c.active);
+      setText("#sideCompletedCount", c.completed);
+      setText("#sideFailedCount", c.failed);
+      setText("#sideCallWaiting", callWaiting);
+      setText("#sideResultWaiting", resultWaiting);
+      setText("#sideUnassigned", unassigned);
+      setText("#agentKimText", `배정 ${kimCount}건`);
+      setText("#agentLeeText", `배정 ${leeCount}건`);
+      setWidth("#agentKimLoad", `${Math.min(100, kimCount * 25)}%`);
+      setWidth("#agentLeeLoad", `${Math.min(100, leeCount * 25)}%`);
+      renderNotifications({ callWaiting, resultWaiting, unassigned, failed: c.failed });
+      setText("#adminDummyState", state.dummyEnabled ? "ON" : "OFF");
+      applyPermissionUi();
+    }
+
+    function updateBellBadge(count) {
+      const badge = qs("#bellCount");
+      if (!badge) return;
+      const unread = state.notificationsRead ? 0 : Number(count || 0);
+      badge.textContent = String(unread);
+      badge.classList.toggle("is-empty", unread <= 0);
+    }
+
+    function setText(selector, value) {
+      const node = qs(selector);
+      if (node) node.textContent = value;
+    }
+
+    function setWidth(selector, value) {
+      const node = qs(selector);
+      if (node) node.style.width = value;
+    }
+
+    function renderNotifications(data) {
+      const items = [
+        { icon: "☎", tone: "amber", title: "전화 대기", body: `${data.callWaiting}건의 예약이 업체 전화 연결을 기다립니다.`, time: "실시간" },
+        { icon: "↗", tone: "blue", title: "결과 업데이트", body: `${data.resultWaiting}건은 고객 조회 화면 반영이 필요합니다.`, time: "CS" },
+        { icon: "!", tone: "red", title: "미배정 예약", body: `${data.unassigned}건은 담당자를 배정해야 합니다.`, time: "배정" },
+        { icon: "✓", tone: "green", title: "예약 완료", body: `${summary().completed}건은 고객이 조회할 수 있습니다.`, time: "완료" }
+      ];
+      setHtml("#notificationList", items.map((item) => `
+        <div class="popover-item">
+          <div class="popover-icon ${escapeHtml(item.tone)}">${escapeHtml(item.icon)}</div>
+          <div><strong>${escapeHtml(item.title)}</strong><span>${escapeHtml(item.body)}</span></div>
+          <div class="popover-time">${escapeHtml(item.time)}</div>
+        </div>
+      `).join(""));
+    }
+
+    function closeTopPopovers() {
+      qs("#notificationPanel")?.classList.remove("open");
+      qs("#adminPanel")?.classList.remove("open");
+      qs("#notificationBtn")?.setAttribute("aria-expanded", "false");
+      qs("#adminMenuBtn")?.setAttribute("aria-expanded", "false");
+    }
+
+    function togglePopover(panelSelector, buttonSelector) {
+      const panel = qs(panelSelector);
+      const button = qs(buttonSelector);
+      const willOpen = !panel.classList.contains("open");
+      closeTopPopovers();
+      panel.classList.toggle("open", willOpen);
+      button.setAttribute("aria-expanded", String(willOpen));
     }
 
     function applyFilters() {
@@ -2179,10 +3491,292 @@
         state.selectedId = state.filtered[0]?.bookingNo || "";
       }
       renderDetail();
+      renderUtilityPages();
+    }
+
+    function countBy(rows, getter) {
+      return rows.reduce((acc, item) => {
+        const key = getter(item) || "기타";
+        acc[key] = (acc[key] || 0) + 1;
+        return acc;
+      }, {});
+    }
+
+    function chartHtml(entries, total = state.rows.length) {
+      return entries.map(([label, value, color = ""]) => `
+        <div class="chart-row">
+          <span>${escapeHtml(label)}</span>
+          <div class="chart-track"><i class="${escapeHtml(color)}" style="width:${percent(value, total)}%"></i></div>
+          <b>${escapeHtml(value)}</b>
+        </div>
+      `).join("");
+    }
+
+    function miniStatus(item) {
+      const status = statusInfo(item);
+      return `<span class="badge ${status.badge}">${escapeHtml(status.label)}</span>`;
+    }
+
+    function renderUtilityPages() {
+      const rows = state.rows;
+      const c = summary(rows);
+      const callWaiting = rows.filter((item) => statusInfo(item).label === "전화 대기");
+      const resultWaiting = rows.filter((item) => resultInfo(item).label === "결과 업데이트");
+      const unassigned = rows.filter((item) => !item.assignee);
+      const latest = rows.slice(0, 6);
+      const byCategory = Object.entries(countBy(rows, (item) => item.category)).sort((a, b) => b[1] - a[1]);
+      const byMessenger = Object.entries(countBy(rows, (item) => item.messenger)).sort((a, b) => b[1] - a[1]);
+      const byResult = [
+        ["예약 완료", c.completed, "고객 조회에 완료 표시"],
+        ["진행중", c.active, "전화 또는 결과 업데이트 필요"],
+        ["취소/실패", c.failed, "관리자 확인 필요"]
+      ];
+
+      setHtml("#dashboardBars", chartHtml([
+        ["오늘 접수", c.todayRows, "blue"],
+        ["진행중", c.active, "amber"],
+        ["예약 완료", c.completed, "green"],
+        ["취소/실패", c.failed, "red"]
+      ], Math.max(c.total, 1)));
+      setHtml("#dashboardAlerts", [
+        activityHtml("전화 대기", `${callWaiting.length}건이 전화 연결을 기다리고 있습니다.`, "amber"),
+        activityHtml("결과 업데이트", `${resultWaiting.length}건은 고객 안내 메시지 저장이 필요합니다.`, "blue"),
+        activityHtml("미배정", `${unassigned.length}건은 담당자 배정이 필요합니다.`, "red")
+      ].join(""));
+      setHtml("#dashboardLatest", latest.map((item) => `
+        <tr><td>${escapeHtml(item.bookingNo)}</td><td>${escapeHtml(item.placeName)}</td><td>${escapeHtml(item.reservationName)}</td><td>${miniStatus(item)}</td></tr>
+      `).join(""));
+      setHtml("#dashboardAgents", chartHtml([
+        ["김현수", rows.filter((item) => item.assignee === "김현수").length, "blue"],
+        ["이수진", rows.filter((item) => item.assignee === "이수진").length, "green"],
+        ["미배정", unassigned.length, "red"]
+      ], Math.max(c.total, 1)));
+
+      const callRows = rows.filter((item) => statusInfo(item).bucket === "call" || resultInfo(item).label === "결과 업데이트");
+      setHtml("#callQueueTable", callRows.map((item) => `
+        <tr><td>${escapeHtml(item.bookingNo)}</td><td>${escapeHtml(item.placeName)}</td><td>${escapeHtml(item.reservationName)}</td><td>${escapeHtml(item.messenger)} ${escapeHtml(item.messengerId || "")}</td><td>${miniStatus(item)}</td></tr>
+      `).join(""));
+      setHtml("#callScriptList", [
+        settingsHtml("1. 업체 연결", "예약 가능 여부와 고객 요청사항을 먼저 확인합니다."),
+        settingsHtml("2. 시간 확인", "1지망과 2지망을 모두 문의하고 불가 시 대체 시간을 확보합니다."),
+        settingsHtml("3. 결과 기록", "고객에게 보이는 안내 메시지와 내부 메모를 분리합니다.")
+      ].join(""));
+      setHtml("#callQuickActions", [
+        activityHtml("예약 완료", "확정 시간과 방문 안내를 고객 메시지로 저장합니다.", "green"),
+        activityHtml("예약 불가", "불가 사유와 대체 일정 요청 메시지를 저장합니다.", "red"),
+        activityHtml("재통화 필요", "전화 미연결 또는 업체 회신 대기 상태로 보류합니다.", "amber")
+      ].join(""));
+
+      const customerMap = new Map();
+      rows.forEach((item) => {
+        const key = item.reservationName || item.fullName || item.bookingNo;
+        const prev = customerMap.get(key) || { count: 0, latest: item };
+        prev.count += 1;
+        if (createdTime(item) > createdTime(prev.latest)) prev.latest = item;
+        customerMap.set(key, prev);
+      });
+      setHtml("#customerTable", [...customerMap.entries()].map(([name, info]) => {
+        const item = info.latest;
+        return `<tr><td>${escapeHtml(name)}</td><td>${escapeHtml(item.messenger)} ${escapeHtml(item.messengerId || "")}</td><td>${escapeHtml(item.bookingNo)}</td><td>${miniStatus(item)}</td><td>${info.count}</td></tr>`;
+      }).join(""));
+      setHtml("#customerSegments", chartHtml(byMessenger.map(([label, value]) => [label, value, "blue"]), Math.max(c.total, 1)));
+
+      setHtml("#categoryReportBars", chartHtml(byCategory.map(([label, value]) => [label, value, "blue"]), Math.max(c.total, 1)));
+      setHtml("#messengerReportBars", chartHtml(byMessenger.map(([label, value]) => [label, value, "green"]), Math.max(c.total, 1)));
+      setHtml("#resultReportTable", byResult.map(([label, value, memo]) => `<tr><td>${escapeHtml(label)}</td><td>${value}</td><td>${percent(value, c.total)}%</td><td>${escapeHtml(memo)}</td></tr>`).join(""));
+      setHtml("#revenueReport", [
+        activityHtml("총 매출", `$${c.revenue.toFixed(2)} USD`, "green"),
+        activityHtml("평균 결제", `$${(c.total ? c.revenue / c.total : 0).toFixed(2)} USD`, "blue"),
+        activityHtml("결제 완료", `${rows.filter((item) => item.paymentStatus === "paid").length}건`, "amber")
+      ].join(""));
+
+      const messageRows = rows.filter((item) => resultInfo(item).label !== "대기" || statusInfo(item).label === "전화 대기").slice(0, 7);
+      setHtml("#messageQueue", messageRows.map((item) => activityHtml(item.bookingNo, `${item.reservationName} · ${item.messenger} · ${resultInfo(item).label}`, resultInfo(item).badge)).join(""));
+      setHtml("#messageTemplates", [
+        templateHtml("예약 완료", "예약이 완료되었습니다. 예약 시간 10분 전까지 도착해 주세요."),
+        templateHtml("예약 불가", "요청하신 일정은 예약이 어려워 대체 가능 일정을 확인 중입니다."),
+        templateHtml("재연락 요청", "전화 연결이 되지 않아 예약 확인이 보류되었습니다."),
+        templateHtml("결과 대기", "업체 확인 중이며 결과가 확인되는 즉시 안내드리겠습니다.")
+      ].join(""));
+
+      setHtml("#firebaseSettings", [
+        settingsHtml("프로젝트", "kall-yellowknife"),
+        settingsHtml("컬렉션", "reservations"),
+        settingsHtml("문서 키", "bookingNo 기준 reservations/{bookingNo}"),
+        settingsHtml("실시간 수신", "onSnapshot으로 접수 및 CS 변경사항 반영")
+      ].join(""));
+      setHtml("#policySettings", [
+        settingsHtml("초기 로그인", "admin / 1234"),
+        settingsHtml("운영 상태", "submitted, calling, call_completed, result_updated, reservation_completed, failed"),
+        settingsHtml("출시 전", "Firebase Auth와 Security Rules 적용 필요")
+      ].join(""));
+      setHtml("#fieldSettings", [
+        settingsHtml("고객 노출", "resultMessage, resultType, resultStatus, status"),
+        settingsHtml("전화 처리", "callStatus, callStartedAt, callCompletedAt, checklist"),
+        settingsHtml("내부 관리", "assignee, internalMemo, updatedAtClient, updatedAtServer")
+      ].join(""));
+      setHtml("#launchChecklist", [
+        '<label><input type="checkbox"> Firebase Auth 관리자 계정 적용</label>',
+        '<label><input type="checkbox"> Firestore Rules 관리자 쓰기 권한 제한</label>',
+        '<label><input type="checkbox"> 더미데이터 토글 제거</label>',
+        '<label><input type="checkbox"> 고객 안내 메시지 템플릿 최종 검수</label>'
+      ].join(""));
+
+      renderUsersPage(rows);
+    }
+
+    function setHtml(selector, html) {
+      const node = qs(selector);
+      if (node) node.innerHTML = html || "";
+    }
+
+    function activityHtml(title, body, tone = "blue") {
+      const badgeClass = tone === "red" ? "red" : tone === "green" ? "green" : tone === "amber" ? "amber" : "blue";
+      return `<div class="activity-item"><div><strong>${escapeHtml(title)}</strong><span>${escapeHtml(body)}</span></div><span class="badge ${badgeClass}">${escapeHtml(tone === "red" ? "주의" : tone === "green" ? "완료" : tone === "amber" ? "대기" : "확인")}</span></div>`;
+    }
+
+    function settingsHtml(title, body) {
+      return `<div class="settings-item"><div><strong>${escapeHtml(title)}</strong><span>${escapeHtml(body)}</span></div></div>`;
+    }
+
+    function templateHtml(title, body) {
+      return `<div class="template-card"><strong>${escapeHtml(title)}</strong><p>${escapeHtml(body)}</p></div>`;
+    }
+
+    function renderUsersPage(rows = state.rows) {
+      const admin = isAdminUser();
+      const assignedByName = (name) => rows.filter((item) => item.assignee === name).length;
+      setHtml("#userTable", state.users.map((user) => userRow(user, assignedByName(user.name), admin)).join(""));
+      const adminCount = state.users.filter((user) => user.role === "ADMIN").length;
+      const agentCount = state.users.filter((user) => user.role === "AGENT").length;
+      const viewerCount = state.users.filter((user) => user.role === "VIEWER").length;
+      setHtml("#roleList", [
+        settingsHtml("Super Admin", `전체 예약 조회, 결과 저장, 설정 변경, 사용자 관리 가능 · ${adminCount}명`),
+        settingsHtml("CS Agent", `전화 체크리스트, 결과 업데이트, 담당 예약 처리 가능 · ${agentCount}명`),
+        settingsHtml("Viewer", `예약 조회와 리포트 확인만 가능 · ${viewerCount}명`),
+        settingsHtml("보안 운영", "비관리자는 사이드바와 관리자 메뉴에서 사용자 관리가 노출되지 않습니다.")
+      ].join(""));
+      setText("#navUserCount", state.users.length);
+      setText("#adminPermissionCount", `${state.users.length}명`);
+    }
+
+    function userRow(user, assigned, admin) {
+      const canDelete = admin && user.id !== "admin" && user.id !== state.currentUser?.id;
+      const statusClass = user.status === "paused" ? "gray" : "green";
+      return `
+        <tr>
+          <td><strong>${escapeHtml(user.name)}</strong><br><span class="muted">${escapeHtml(user.memo || "-")}</span></td>
+          <td>${escapeHtml(user.id)}</td>
+          <td><span class="role-chip ${roleClass(user.role)}">${escapeHtml(roleLabel(user.role))}</span></td>
+          <td><span class="badge ${statusClass}">${escapeHtml(statusLabel(user.status))}</span></td>
+          <td>${escapeHtml(assigned)}건</td>
+          <td>
+            <div class="inline-actions">
+              <button class="small-btn" type="button" data-user-action="edit" data-user-id="${escapeHtml(user.id)}" ${admin ? "" : "disabled"}>편집</button>
+              <button class="danger-btn" type="button" data-user-action="delete" data-user-id="${escapeHtml(user.id)}" ${canDelete ? "" : "disabled"}>삭제</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }
+
+    function resetUserForm() {
+      state.editingUserId = "";
+      setText("#userFormTitle", "사용자 추가");
+      qs("#userEditKey").value = "";
+      qs("#userName").value = "";
+      qs("#userId").value = "";
+      qs("#userId").readOnly = false;
+      qs("#userPassword").value = "";
+      qs("#userPassword").placeholder = "신규 비밀번호";
+      qs("#userRole").value = "AGENT";
+      qs("#userStatus").value = "active";
+      qs("#userMemo").value = "";
+    }
+
+    function editUser(id) {
+      if (!isAdminUser()) return showToast("ADMIN 계정만 사용자 관리가 가능합니다.");
+      const user = findUser(id);
+      if (!user) return showToast("사용자를 찾을 수 없습니다.");
+      state.editingUserId = id;
+      setText("#userFormTitle", "사용자 편집");
+      qs("#userEditKey").value = id;
+      qs("#userName").value = user.name || "";
+      qs("#userId").value = user.id || "";
+      qs("#userId").readOnly = true;
+      qs("#userPassword").value = "";
+      qs("#userPassword").placeholder = "변경할 때만 입력";
+      qs("#userRole").value = user.role || "AGENT";
+      qs("#userStatus").value = user.status || "active";
+      qs("#userMemo").value = user.memo || "";
+    }
+
+    function saveUserFromForm(event) {
+      event.preventDefault();
+      if (!isAdminUser()) return showToast("ADMIN 계정만 사용자 관리가 가능합니다.");
+      const editId = qs("#userEditKey").value.trim();
+      const id = qs("#userId").value.trim();
+      const name = qs("#userName").value.trim();
+      const password = qs("#userPassword").value;
+      const role = qs("#userRole").value;
+      const status = qs("#userStatus").value;
+      const memo = qs("#userMemo").value.trim();
+      if (!id || !name) return showToast("이름과 아이디를 입력하세요.");
+      if (!editId && !password) return showToast("신규 사용자는 비밀번호가 필요합니다.");
+      const duplicate = state.users.some((user) => user.id === id && user.id !== editId);
+      if (duplicate) return showToast("이미 사용 중인 아이디입니다.");
+
+      if (editId) {
+        state.users = state.users.map((user) => {
+          if (user.id !== editId) return user;
+          return {
+            ...user,
+            name,
+            password: password || user.password,
+            role,
+            status,
+            memo
+          };
+        });
+        if (state.currentUser?.id === editId) {
+          setCurrentUser(findUser(editId));
+        }
+        showToast("사용자 정보를 수정했습니다.");
+      } else {
+        state.users.push({ id, password, name, role, status, memo });
+        showToast("새 사용자를 추가했습니다.");
+      }
+      saveUsers();
+      renderUsersPage();
+      resetUserForm();
+      applyPermissionUi();
+    }
+
+    function deleteUser(id) {
+      if (!isAdminUser()) return showToast("ADMIN 계정만 사용자 관리가 가능합니다.");
+      if (id === "admin" || id === state.currentUser?.id) return showToast("현재 관리자 계정은 삭제할 수 없습니다.");
+      const user = findUser(id);
+      if (!user) return showToast("사용자를 찾을 수 없습니다.");
+      const confirmed = window.confirm(`${user.name} 계정을 삭제하시겠습니까?`);
+      if (!confirmed) return;
+      state.users = state.users.filter((item) => item.id !== id);
+      saveUsers();
+      renderUsersPage();
+      resetUserForm();
+      showToast("사용자를 삭제했습니다.");
     }
 
     function infoRows(rows) {
       return rows.map(([label, value]) => `<div class="info-row"><span>${escapeHtml(label)}</span><span>${value ? nl2br(value) : "-"}</span></div>`).join("");
+    }
+
+    function compactInfoRows(rows) {
+      return rows.map(([label, value, wide]) => `
+        <div class="compact-info ${wide ? "wide" : ""}">
+          <span>${escapeHtml(label)}</span>
+          <strong>${value ? nl2br(value) : "-"}</strong>
+        </div>
+      `).join("");
     }
 
     function selectedItem() {
@@ -2198,9 +3792,7 @@
         qs("#detailTopBadge").textContent = "대기";
         qs("#detailCreated").textContent = "-";
         qs("#detailUpdated").textContent = "-";
-        qs("#placeInfo").innerHTML = "";
-        qs("#customerInfo").innerHTML = "";
-        qs("#paymentInfo").innerHTML = "";
+        qs("#compactInfo").innerHTML = "";
         qs("#progressSteps").innerHTML = "";
         qs("#resultMessage").value = "";
         qsa("[data-check]").forEach((input) => { input.checked = false; });
@@ -2213,25 +3805,15 @@
       qs("#detailTopBadge").textContent = status.label === "전화 대기" ? "접수완료" : status.label;
       qs("#detailCreated").textContent = formatDateTime(createdValue(item));
       qs("#detailUpdated").textContent = item.updatedAtClient ? formatDateTime(item.updatedAtClient) : "-";
-      qs("#placeInfo").innerHTML = infoRows([
+      qs("#compactInfo").innerHTML = compactInfoRows([
         ["상호명", item.placeName],
-        ["유형", item.category],
-        ["예약일 1", [item.date1, item.time1].filter(Boolean).join(" ")],
-        ["예약일 2", [item.date2, item.time2].filter(Boolean).join(" ")],
-        ["인원", item.people],
-        ["요청사항", item.requestTitle || item.procedureName || item.note]
-      ]);
-      qs("#customerInfo").innerHTML = infoRows([
         ["고객명", item.reservationName],
+        ["유형 / 인원", [item.category, item.people].filter(Boolean).join(" · ")],
         ["메신저", `${item.messenger || "-"} ${item.messengerId ? `(${item.messengerId})` : ""}`],
-        ["메신저 ID", item.messengerId],
-        ["언어", item.language || item.lang || "-"],
-        ["여권명", item.fullName]
-      ]);
-      qs("#paymentInfo").innerHTML = infoRows([
-        ["결제금액", item.priceUsd ? `$${Number(item.priceUsd).toFixed(2)} USD` : "-"],
-        ["결제수단", item.payMethod],
-        ["결제상태", item.paymentStatus === "paid" ? "결제 완료" : item.paymentStatus]
+        ["1지망", [item.date1, item.time1].filter(Boolean).join(" ")],
+        ["2지망", [item.date2, item.time2].filter(Boolean).join(" ")],
+        ["결제", `${item.priceUsd ? `$${Number(item.priceUsd).toFixed(2)} USD` : "-"} · ${item.payMethod || "-"} · ${item.paymentStatus === "paid" ? "완료" : item.paymentStatus || "-"}`],
+        ["요청사항", item.requestTitle || item.procedureName || item.note, true]
       ]);
       renderSteps(item);
       qsa("[data-check]").forEach((input) => {
@@ -2280,11 +3862,27 @@
     }
 
     function refreshAll() {
+      state.lastRefreshAt = new Date();
       state.rows = combinedRows();
       refreshFilterOptions();
       updateMetrics();
       applyFilters();
       qs("#dummyLabel").textContent = state.dummyEnabled ? "더미데이터 ON" : "더미데이터 OFF";
+      setText("#sideDummyStatus", state.dummyEnabled ? "더미 ON" : "실데이터");
+      setText("#autoRefreshStatus", `자동 새로고침 10초 · 최근 ${new Intl.DateTimeFormat("ko-KR", { hour: "2-digit", minute: "2-digit", second: "2-digit" }).format(state.lastRefreshAt)}`);
+    }
+
+    function performRefresh({ silent = false } = {}) {
+      refreshAll();
+      if (!state.firebaseReady && !state.unsubscribe) connectFirebase();
+      if (!silent) showToast("화면을 새로고침했습니다.");
+    }
+
+    function startAutoRefresh() {
+      if (state.autoRefreshTimer) return;
+      state.autoRefreshTimer = setInterval(() => {
+        performRefresh({ silent: true });
+      }, 10000);
     }
 
     function selectRow(id) {
@@ -2292,11 +3890,65 @@
       renderDetail();
     }
 
+    const pageTitles = {
+      dashboard: "대시보드",
+      reservations: "예약 관리",
+      call: "전화 업무",
+      customers: "고객 관리",
+      reports: "통계/리포트",
+      messages: "메시지 발송",
+      settings: "설정",
+      users: "사용자 관리"
+    };
+
+    function showPage(page) {
+      if (page === "users" && !isAdminUser()) {
+        page = "reservations";
+        showToast("ADMIN 계정만 사용자 관리가 가능합니다.");
+      }
+      state.page = page;
+      qsa(".page-view").forEach((view) => view.classList.toggle("active", view.id === `${page}Page`));
+      const showDetail = page === "reservations" || page === "call";
+      qs(".crm-layout").classList.toggle("detail-hidden", !showDetail);
+      qs(".detail-panel").classList.toggle("panel-hidden", !showDetail);
+      qs(".top-title h1").textContent = pageTitles[page] || "예약 관리";
+      qsa(".nav-btn").forEach((button) => {
+        const nav = button.dataset.nav;
+        const active = (page === "reservations" && nav === "all") || (page === "call" && nav === "call") || nav === page;
+        button.classList.toggle("active", active);
+      });
+      renderUtilityPages();
+      if (window.innerWidth <= 920) qs("#sidebar").classList.remove("open");
+    }
+
     function setView(view) {
       state.view = view;
       qsa(".status-tab").forEach((button) => button.classList.toggle("active", button.dataset.view === view));
-      qsa(".nav-btn").forEach((button) => button.classList.toggle("active", button.dataset.nav === view || (view === "all" && button.dataset.nav === "all")));
       applyFilters();
+      showPage(view === "call" ? "call" : "reservations");
+    }
+
+    function setNavPage(nav) {
+      if (nav === "users" && !isAdminUser()) {
+        showToast("ADMIN 계정만 사용자 관리가 가능합니다.");
+        return;
+      }
+      const pageMap = {
+        dashboard: "dashboard",
+        all: "reservations",
+        call: "call",
+        customers: "customers",
+        reports: "reports",
+        messages: "messages",
+        settings: "settings",
+        users: "users"
+      };
+      const nextPage = pageMap[nav] || "reservations";
+      if (nav === "all") state.view = "all";
+      if (nav === "call") state.view = "call";
+      qsa(".status-tab").forEach((button) => button.classList.toggle("active", button.dataset.view === state.view));
+      applyFilters();
+      showPage(nextPage);
       if (window.innerWidth <= 920) qs("#sidebar").classList.remove("open");
     }
 
@@ -2352,6 +4004,15 @@
         resultMessage: qs("#resultMessage").value.trim(),
         status: "hold"
       }, "보류 상태로 저장했습니다.");
+    }
+
+    async function completeSelectedCall() {
+      await updateReservation({
+        callStatus: "completed",
+        status: "call_completed",
+        checklist: selectedChecklist(),
+        callCompletedAt: new Date().toISOString()
+      }, "전화 완료로 처리했습니다.");
     }
 
     async function saveAndNext() {
@@ -2418,6 +4079,13 @@
     }
 
     function showApp() {
+      state.users = loadUsers();
+      if (!state.currentUser) {
+        const savedUserId = sessionStorage.getItem(SESSION_USER_KEY) || "admin";
+        setCurrentUser(findUser(savedUserId) || findUser("admin") || state.users[0]);
+      } else {
+        setCurrentUser(findUser(state.currentUser.id) || state.currentUser);
+      }
       qs("#loginPage").classList.add("hidden");
       qs("#app").classList.remove("hidden");
       state.dummyRows = dummyRows.map((item) => normalize(item.bookingNo, item, "dummy"));
@@ -2429,14 +4097,22 @@
         minute: "2-digit"
       }).format(new Date()).replaceAll(". ", "-").replace(".", "");
       refreshAll();
+      showPage(state.page || "reservations");
+      startAutoRefresh();
       if (!state.unsubscribe) connectFirebase();
     }
 
     function logout() {
       sessionStorage.removeItem("kallCsAuthed");
+      sessionStorage.removeItem(SESSION_USER_KEY);
+      state.currentUser = null;
       if (state.unsubscribe) {
         state.unsubscribe();
         state.unsubscribe = null;
+      }
+      if (state.autoRefreshTimer) {
+        clearInterval(state.autoRefreshTimer);
+        state.autoRefreshTimer = null;
       }
       qs("#app").classList.add("hidden");
       qs("#loginPage").classList.remove("hidden");
@@ -2445,22 +4121,77 @@
     function bindEvents() {
       qs("#loginForm").addEventListener("submit", (event) => {
         event.preventDefault();
-        const ok = qs("#loginId").value.trim() === "admin" && qs("#loginPw").value === "1234";
+        state.users = loadUsers();
+        const loginId = qs("#loginId").value.trim();
+        const loginPw = qs("#loginPw").value;
+        const user = state.users.find((item) => item.id === loginId && item.password === loginPw && item.status !== "paused");
+        const ok = Boolean(user);
         qs("#loginError").style.display = ok ? "none" : "block";
         if (!ok) return;
+        setCurrentUser(user);
         sessionStorage.setItem("kallCsAuthed", "1");
+        sessionStorage.setItem(SESSION_USER_KEY, user.id);
         showApp();
       });
       qs("#sideLogoutBtn").addEventListener("click", logout);
-      qs("#menuBtn").addEventListener("click", () => qs("#sidebar").classList.toggle("open"));
+      qs("#menuBtn").addEventListener("click", () => {
+        if (window.innerWidth <= 920) qs("#sidebar").classList.toggle("open");
+        else qs("#app").classList.toggle("sidebar-collapsed");
+      });
+      qs("#notificationBtn").addEventListener("click", (event) => {
+        event.stopPropagation();
+        togglePopover("#notificationPanel", "#notificationBtn");
+      });
+      qs("#adminMenuBtn").addEventListener("click", (event) => {
+        event.stopPropagation();
+        togglePopover("#adminPanel", "#adminMenuBtn");
+      });
+      qsa(".top-popover").forEach((panel) => panel.addEventListener("click", (event) => event.stopPropagation()));
+      document.addEventListener("click", closeTopPopovers);
+      qs("#markReadBtn").addEventListener("click", () => {
+        state.notificationsRead = true;
+        updateBellBadge(0);
+        showToast("알림을 모두 확인 처리했습니다.");
+      });
+      qsa("[data-admin-action]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const action = button.dataset.adminAction;
+          if (action === "logout") {
+            logout();
+            return;
+          }
+          if (action === "refresh") {
+            performRefresh();
+            closeTopPopovers();
+            return;
+          }
+          if (action === "dummy") {
+            qs("#dummyToggle").click();
+            closeTopPopovers();
+            return;
+          }
+          if (action === "permissions") {
+            if (!isAdminUser()) {
+              showToast("ADMIN 계정만 사용자 관리가 가능합니다.");
+              closeTopPopovers();
+              return;
+            }
+            setNavPage("users");
+            showToast("사용자 관리 페이지로 이동했습니다.");
+            closeTopPopovers();
+            return;
+          }
+          showToast(`${state.currentUser?.name || "사용자"} 계정으로 로그인되어 있습니다.`);
+          closeTopPopovers();
+        });
+      });
       qs("#dummyToggle").addEventListener("change", (event) => {
         state.dummyEnabled = event.target.checked;
         refreshAll();
         showToast(state.dummyEnabled ? "더미데이터를 표시합니다." : "더미데이터를 숨겼습니다.");
       });
       qs("#refreshBtn").addEventListener("click", () => {
-        refreshAll();
-        showToast("화면을 새로고침했습니다.");
+        performRefresh();
       });
       qs("#syncBtn").addEventListener("click", () => {
         showToast(state.firebaseReady ? "Firebase 실시간 연결 중입니다." : "Firebase 연결을 다시 확인합니다.");
@@ -2469,9 +4200,13 @@
       qsa(".status-tab").forEach((button) => button.addEventListener("click", () => setView(button.dataset.view)));
       qsa(".nav-btn").forEach((button) => {
         button.addEventListener("click", () => {
-          const nav = button.dataset.nav;
-          if (["all", "call"].includes(nav)) setView(nav);
-          else showToast("현재 버전에서는 예약 관리 화면에서 통합 운영합니다.");
+          setNavPage(button.dataset.nav);
+        });
+      });
+      qsa("[data-page-refresh]").forEach((button) => {
+        button.addEventListener("click", () => {
+          renderUtilityPages();
+          showToast("현재 페이지 데이터를 갱신했습니다.");
         });
       });
       ["searchInput", "statusFilter", "categoryFilter", "messengerFilter", "dateFrom", "dateTo"].forEach((id) => {
@@ -2488,13 +4223,38 @@
         });
       });
       qs("#callBtn").addEventListener("click", callSelected);
+      qs("#callPageNextBtn").addEventListener("click", () => {
+        const next = state.rows.find((item) => statusInfo(item).bucket === "call");
+        if (next) {
+          selectRow(next.bookingNo);
+          showToast(`${next.bookingNo} 전화건을 열었습니다.`);
+        } else {
+          showToast("대기 중인 전화 업무가 없습니다.");
+        }
+      });
+      qs("#startCallBtn").addEventListener("click", callSelected);
+      qs("#completeCallBtn").addEventListener("click", completeSelectedCall);
       qs("#holdBtn").addEventListener("click", holdSelected);
       qs("#saveNextBtn").addEventListener("click", saveAndNext);
       qs("#closeDetailBtn").addEventListener("click", () => showToast("상세 패널은 PC 화면에서 고정 표시됩니다."));
+      qs("#userCreateBtn")?.addEventListener("click", resetUserForm);
+      qs("#userCancelBtn")?.addEventListener("click", resetUserForm);
+      qs("#userForm")?.addEventListener("submit", saveUserFromForm);
+      qs("#userTable")?.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-user-action]");
+        if (!button) return;
+        const id = button.dataset.userId;
+        if (button.dataset.userAction === "edit") editUser(id);
+        if (button.dataset.userAction === "delete") deleteUser(id);
+      });
     }
 
     bindEvents();
-    if (sessionStorage.getItem("kallCsAuthed") === "1") showApp();
+    if (sessionStorage.getItem("kallCsAuthed") === "1") {
+      const savedUser = findUser(sessionStorage.getItem(SESSION_USER_KEY));
+      if (savedUser) setCurrentUser(savedUser);
+      showApp();
+    }
   </script>
 </body>
 </html>
