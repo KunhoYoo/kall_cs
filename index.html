@@ -473,6 +473,25 @@
       border: 1px solid rgba(255, 255, 255, .1);
       border-radius: 9px;
       background: rgba(255, 255, 255, .06);
+      cursor: pointer;
+      transition: border-color .16s, background .16s, transform .16s;
+    }
+
+    .side-kpi:hover,
+    .side-kpi.active-filter,
+    .side-queue-item:hover,
+    .side-queue-item.active-filter,
+    .agent-row:hover,
+    .agent-row.active-filter {
+      border-color: rgba(191, 216, 255, .45);
+      background: rgba(17, 103, 255, .18);
+    }
+
+    .side-kpi:focus-visible,
+    .side-queue-item:focus-visible,
+    .agent-row:focus-visible {
+      outline: 2px solid rgba(191, 216, 255, .8);
+      outline-offset: 2px;
     }
 
     .side-kpi span {
@@ -510,6 +529,8 @@
       color: rgba(255, 255, 255, .78);
       font-size: 12px;
       font-weight: 800;
+      cursor: pointer;
+      transition: border-color .16s, background .16s;
     }
 
     .queue-color {
@@ -540,6 +561,8 @@
       border: 1px solid rgba(255, 255, 255, .09);
       border-radius: 9px;
       background: rgba(255, 255, 255, .045);
+      cursor: pointer;
+      transition: border-color .16s, background .16s;
     }
 
     .agent-avatar {
@@ -1191,6 +1214,37 @@
       margin-bottom: 8px;
     }
 
+    .smart-filter-bar {
+      min-height: 38px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 0 0 8px;
+      padding: 8px 10px;
+      border: 1px solid #bfd8ff;
+      border-radius: var(--radius);
+      color: var(--ink-2);
+      background: #f3f8ff;
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .smart-filter-bar.active {
+      display: flex;
+    }
+
+    .smart-filter-bar strong {
+      color: var(--blue);
+    }
+
+    .smart-filter-bar button {
+      color: var(--blue);
+      background: transparent;
+      font-size: 12px;
+      font-weight: 950;
+    }
+
     .search-wrap {
       position: relative;
     }
@@ -1262,7 +1316,7 @@
 
     table {
       width: 100%;
-      min-width: 1080px;
+      min-width: 1160px;
       border-collapse: collapse;
     }
 
@@ -1301,6 +1355,37 @@
     tbody tr.selected {
       background: #eaf3ff;
       box-shadow: inset 0 1px 0 #b8d7ff, inset 0 -1px 0 #b8d7ff;
+    }
+
+    tbody tr.is-overdue {
+      background: linear-gradient(90deg, rgba(255, 240, 242, .96), rgba(255, 247, 248, .74), rgba(255, 240, 242, .96));
+      background-size: 220% 100%;
+      animation: overduePulse 2.8s ease-in-out infinite;
+    }
+
+    tbody tr.is-overdue:hover {
+      background: linear-gradient(90deg, rgba(255, 228, 232, .98), rgba(255, 246, 247, .86), rgba(255, 228, 232, .98));
+      background-size: 220% 100%;
+    }
+
+    tbody tr.is-overdue.selected {
+      box-shadow: inset 3px 0 0 var(--red), inset 0 1px 0 #fecdd3, inset 0 -1px 0 #fecdd3;
+    }
+
+    tbody tr.is-locked:not(.selected) {
+      opacity: .78;
+    }
+
+    @keyframes overduePulse {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      tbody tr.is-overdue {
+        animation: none;
+      }
     }
 
     .check-cell { width: 46px; text-align: center; }
@@ -1463,6 +1548,61 @@
       padding: 6px 0;
     }
 
+    .assignment-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      gap: 6px;
+      align-items: end;
+    }
+
+    .assignment-grid label {
+      display: grid;
+      gap: 4px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .assignment-select {
+      width: 100%;
+      min-height: 30px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 0 8px;
+      color: var(--ink-2);
+      background: #fff;
+      font-size: 12px;
+      font-weight: 850;
+      outline: none;
+    }
+
+    .lock-card {
+      margin-top: 6px;
+      padding: 7px 8px;
+      border: 1px solid var(--line-2);
+      border-radius: 7px;
+      background: #fbfdff;
+      color: var(--ink-2);
+      font-size: 11px;
+      line-height: 1.45;
+    }
+
+    .lock-card strong {
+      display: block;
+      color: var(--ink);
+      font-size: 12px;
+    }
+
+    .lock-card.locked {
+      border-color: #ffd996;
+      background: #fff8ea;
+    }
+
+    .lock-card.blocked {
+      border-color: #fecdd3;
+      background: #fff5f6;
+    }
+
     .compact-info-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1514,6 +1654,41 @@
     .detail-action-grid .small-btn {
       min-height: 28px;
       font-size: 11.5px;
+      font-weight: 900;
+    }
+
+    .log-list {
+      display: grid;
+      gap: 6px;
+      max-height: 168px;
+      overflow: auto;
+      padding-right: 2px;
+    }
+
+    .log-item {
+      padding: 7px 8px;
+      border: 1px solid var(--line-2);
+      border-radius: 7px;
+      background: #fbfdff;
+    }
+
+    .log-item strong {
+      display: block;
+      color: var(--ink);
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    .log-item span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .log-item b {
+      color: var(--ink-2);
       font-weight: 900;
     }
 
@@ -2188,21 +2363,21 @@
       </nav>
       <div class="side-section-label">TODAY QUEUE</div>
       <div class="side-kpi-grid">
-        <div class="side-kpi"><span>오늘 접수</span><strong id="sideTodayCount">0</strong></div>
-        <div class="side-kpi"><span>진행중</span><strong id="sideActiveCount">0</strong></div>
-        <div class="side-kpi"><span>예약 완료</span><strong id="sideCompletedCount">0</strong></div>
-        <div class="side-kpi"><span>주의 필요</span><strong id="sideFailedCount">0</strong></div>
+        <div class="side-kpi" role="button" tabindex="0" data-smart-filter="today"><span>오늘 접수</span><strong id="sideTodayCount">0</strong></div>
+        <div class="side-kpi" role="button" tabindex="0" data-smart-filter="active"><span>진행중</span><strong id="sideActiveCount">0</strong></div>
+        <div class="side-kpi" role="button" tabindex="0" data-smart-filter="completed"><span>예약 완료</span><strong id="sideCompletedCount">0</strong></div>
+        <div class="side-kpi" role="button" tabindex="0" data-smart-filter="attention"><span>주의 필요</span><strong id="sideFailedCount">0</strong></div>
       </div>
       <div class="side-section-label">OPERATION QUEUE</div>
       <div class="side-queue-list">
-        <div class="side-queue-item"><i class="queue-color amber"></i><span>전화 대기</span><b id="sideCallWaiting">0</b></div>
-        <div class="side-queue-item"><i class="queue-color"></i><span>결과 대기</span><b id="sideResultWaiting">0</b></div>
-        <div class="side-queue-item"><i class="queue-color red"></i><span>미배정</span><b id="sideUnassigned">0</b></div>
+        <div class="side-queue-item" role="button" tabindex="0" data-smart-filter="call_waiting"><i class="queue-color amber"></i><span>전화 대기</span><b id="sideCallWaiting">0</b></div>
+        <div class="side-queue-item" role="button" tabindex="0" data-smart-filter="result_waiting"><i class="queue-color"></i><span>결과 대기</span><b id="sideResultWaiting">0</b></div>
+        <div class="side-queue-item" role="button" tabindex="0" data-smart-filter="unassigned"><i class="queue-color red"></i><span>미배정</span><b id="sideUnassigned">0</b></div>
       </div>
       <div class="side-section-label">AGENT STATUS</div>
       <div class="agent-list">
-        <div class="agent-row"><div class="agent-avatar">김</div><div><strong>김현수</strong><span id="agentKimText">배정 0건</span></div><div class="agent-load"><i id="agentKimLoad" style="width:0%"></i></div></div>
-        <div class="agent-row"><div class="agent-avatar">이</div><div><strong>이수진</strong><span id="agentLeeText">배정 0건</span></div><div class="agent-load"><i id="agentLeeLoad" style="width:0%"></i></div></div>
+        <div class="agent-row" role="button" tabindex="0" data-agent="김현수"><div class="agent-avatar">김</div><div><strong>김현수</strong><span id="agentKimText">배정 0건</span></div><div class="agent-load"><i id="agentKimLoad" style="width:0%"></i></div></div>
+        <div class="agent-row" role="button" tabindex="0" data-agent="이수진"><div class="agent-avatar">이</div><div><strong>이수진</strong><span id="agentLeeText">배정 0건</span></div><div class="agent-load"><i id="agentLeeLoad" style="width:0%"></i></div></div>
       </div>
       <div class="side-session">
         <div class="session-line"><span class="session-dot"></span> 로그인: <span id="sideLoginUser">admin</span></div>
@@ -2353,6 +2528,10 @@
               <input id="dateTo" type="date" value="2026-05-11">
             </div>
           </div>
+          <div id="smartFilterBar" class="smart-filter-bar" aria-live="polite">
+            <span>현재 보기: <strong id="smartFilterLabel">전체 예약</strong></span>
+            <button id="clearSmartFilterBtn" type="button">필터 해제</button>
+          </div>
 
           <div class="table-card">
             <div class="table-wrap">
@@ -2369,6 +2548,7 @@
                     <th>상태</th>
                     <th>결과</th>
                     <th>담당자</th>
+                    <th>주의</th>
                   </tr>
                 </thead>
                 <tbody id="bookingRows"></tbody>
@@ -2645,6 +2825,25 @@
             </div>
 
             <section class="detail-section tight">
+              <h3>담당/잠금</h3>
+              <div class="assignment-grid">
+                <label for="assigneeSelect">담당자
+                  <select id="assigneeSelect" class="assignment-select"></select>
+                </label>
+                <button id="assignMeBtn" class="small-btn" type="button">내 담당</button>
+                <button id="autoAssignBtn" class="small-btn" type="button">자동 배정</button>
+              </div>
+              <div id="lockState" class="lock-card">
+                <strong>작업 잠금 없음</strong>
+                <span>전화 시작 또는 작업 잠금 시 다른 상담자 수정이 제한됩니다.</span>
+              </div>
+              <div class="detail-action-grid">
+                <button id="lockBtn" class="small-btn" type="button">작업 잠금</button>
+                <button id="releaseLockBtn" class="small-btn" type="button">잠금 해제</button>
+              </div>
+            </section>
+
+            <section class="detail-section tight">
               <h3>예약 핵심 정보</h3>
               <div id="compactInfo" class="compact-info-grid"></div>
               <div class="detail-action-grid">
@@ -2667,6 +2866,11 @@
                 <label><input type="checkbox" data-check="customer_confirmed"> 4. 예약 확정 및 고객 정보 확인</label>
                 <label><input type="checkbox" data-check="result_updated"> 5. 결과 업데이트</label>
               </div>
+            </section>
+
+            <section class="detail-section tight">
+              <h3>처리 이력</h3>
+              <div id="activityLogList" class="log-list"></div>
             </section>
 
             <section class="detail-section tight" style="border-bottom:0;">
@@ -2729,7 +2933,8 @@
       lastRefreshAt: null,
       users: [],
       currentUser: null,
-      editingUserId: ""
+      editingUserId: "",
+      smartFilter: null
     };
 
     const USER_STORAGE_KEY = "kallCsUsers";
@@ -3140,8 +3345,13 @@
         callStatus: data.callStatus || "pending",
         resultType: data.resultType || inferResultType(data),
         status: data.status || "submitted",
+        assigneeId: data.assigneeId || "",
         assignee: data.assignee || data.agent || "",
-        checklist: Array.isArray(data.checklist) ? data.checklist : []
+        checklist: Array.isArray(data.checklist) ? data.checklist : [],
+        lock: data.lock || null,
+        callAttempts: Number(data.callAttempts || 0),
+        activityLogs: Array.isArray(data.activityLogs) ? data.activityLogs : (Array.isArray(data.callLogs) ? data.callLogs : []),
+        callLogs: Array.isArray(data.callLogs) ? data.callLogs : []
       };
     }
 
@@ -3201,6 +3411,17 @@
       return new Intl.DateTimeFormat("en-CA", { year: "numeric", month: "2-digit", day: "2-digit", timeZone: "Asia/Seoul" }).format(new Date());
     }
 
+    function dateInputKey(date) {
+      return new Intl.DateTimeFormat("en-CA", { year: "numeric", month: "2-digit", day: "2-digit", timeZone: "Asia/Seoul" }).format(date);
+    }
+
+    function setDefaultDateRange() {
+      const now = new Date();
+      const from = new Date(now.getTime() - 7 * 86400000);
+      qs("#dateFrom").value = dateInputKey(from);
+      qs("#dateTo").value = todayKey();
+    }
+
     function isCallDone(item) {
       return ["completed", "done", "전화 완료", "전화완료"].includes(String(item.callStatus || "").toLowerCase()) || Boolean(item.callCompletedAt);
     }
@@ -3226,6 +3447,112 @@
       if (isFailed(item)) return statusMap.failed;
       if (isCallDone(item) || item.resultType === "updated") return statusMap.updated;
       return statusMap.pending;
+    }
+
+    function minutesSinceCreated(item) {
+      const time = createdTime(item);
+      return time ? Math.floor((Date.now() - time) / 60000) : 0;
+    }
+
+    function isOverdue(item) {
+      return minutesSinceCreated(item) >= 60 && !isCompleted(item) && !isFailed(item);
+    }
+
+    function isResultWaiting(item) {
+      return resultInfo(item).label === "결과 업데이트";
+    }
+
+    function isAttention(item) {
+      return isOverdue(item) || isFailed(item) || !item.assignee || isResultWaiting(item);
+    }
+
+    function activeAgents() {
+      return state.users.filter((user) => user.status !== "paused" && ["AGENT", "ADMIN"].includes(user.role));
+    }
+
+    function assignableAgents() {
+      const agents = activeAgents().filter((user) => user.role === "AGENT");
+      return agents.length ? agents : activeAgents();
+    }
+
+    function agentById(id) {
+      return state.users.find((user) => user.id === id);
+    }
+
+    function agentByName(name) {
+      return state.users.find((user) => user.name === name);
+    }
+
+    function currentActor() {
+      const user = state.currentUser || findUser(sessionStorage.getItem(SESSION_USER_KEY)) || state.users[0] || {};
+      return {
+        id: user.id || "unknown",
+        name: user.name || "사용자"
+      };
+    }
+
+    function activeLock(item) {
+      const lock = item?.lock;
+      if (!lock?.ownerId) return null;
+      const expiresAt = parseDate(lock.expiresAt)?.getTime() || 0;
+      return expiresAt > Date.now() ? lock : null;
+    }
+
+    function isLockedByOther(item) {
+      const lock = activeLock(item);
+      return Boolean(lock && lock.ownerId !== currentActor().id);
+    }
+
+    function buildLock() {
+      const actor = currentActor();
+      const now = new Date();
+      const expires = new Date(now.getTime() + 10 * 60000);
+      return {
+        ownerId: actor.id,
+        ownerName: actor.name,
+        lockedAt: now.toISOString(),
+        expiresAt: expires.toISOString()
+      };
+    }
+
+    function logTitle(type) {
+      const map = {
+        assigned: "담당자 배정",
+        auto_assigned: "자동 배정",
+        lock_acquired: "작업 잠금",
+        lock_released: "잠금 해제",
+        call_started: "전화 시작",
+        call_completed: "전화 완료",
+        hold: "보류 저장",
+        result_saved: "결과 저장"
+      };
+      return map[type] || "처리 업데이트";
+    }
+
+    function buildLogEntry(type, item, patch, memo = "") {
+      const actor = currentActor();
+      return {
+        id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+        type,
+        title: logTitle(type),
+        actorId: actor.id,
+        actorName: actor.name,
+        fromStatus: item.status || "",
+        toStatus: patch.status || item.status || "",
+        memo,
+        createdAt: new Date().toISOString()
+      };
+    }
+
+    function withLogPayload(item, patch, options = {}) {
+      if (!options.logType) return patch;
+      const entry = buildLogEntry(options.logType, item, patch, options.logMemo || "");
+      const activityLogs = [...(item.activityLogs || []), entry];
+      const nextPatch = { ...patch, activityLogs };
+      if (String(options.logType).startsWith("call_")) {
+        nextPatch.callLogs = [...(item.callLogs || []), entry];
+      }
+      return nextPatch;
     }
 
     function messengerClass(name) {
@@ -3299,6 +3626,20 @@
       return true;
     }
 
+    function smartFilterMatches(item) {
+      const filter = state.smartFilter;
+      if (!filter) return true;
+      if (filter.type === "today") return dateKey(createdValue(item)) === todayKey();
+      if (filter.type === "active") return !isCompleted(item) && !isFailed(item);
+      if (filter.type === "completed") return isCompleted(item);
+      if (filter.type === "attention") return isAttention(item);
+      if (filter.type === "call_waiting") return statusInfo(item).label === "전화 대기";
+      if (filter.type === "result_waiting") return isResultWaiting(item);
+      if (filter.type === "unassigned") return !item.assignee;
+      if (filter.type === "agent") return item.assignee === filter.value || item.assigneeId === filter.value;
+      return true;
+    }
+
     function summary(rows = state.rows) {
       const total = rows.length;
       const today = todayKey();
@@ -3308,7 +3649,8 @@
       const call = rows.filter((item) => statusInfo(item).bucket === "call").length;
       const todayRows = rows.filter((item) => dateKey(createdValue(item)) === today).length;
       const revenue = rows.reduce((sum, item) => sum + (item.paymentStatus === "paid" ? Number(item.priceUsd || 0) : 0), 0);
-      return { total, todayRows, active, completed, failed, call, revenue };
+      const attention = rows.filter(isAttention).length;
+      return { total, todayRows, active, completed, failed, call, revenue, attention };
     }
 
     function percent(value, total) {
@@ -3349,8 +3691,8 @@
       qs("#progressActive").style.width = `${percent(c.active, c.total)}%`;
       qs("#progressCompleted").style.width = `${percent(c.completed, c.total)}%`;
       qs("#progressFailed").style.width = `${percent(c.failed, c.total)}%`;
-      const notificationCount = callWaiting + resultWaiting + unassigned + c.failed;
-      const notificationSignature = [callWaiting, resultWaiting, unassigned, c.failed].join("|");
+      const notificationCount = callWaiting + resultWaiting + unassigned + c.attention;
+      const notificationSignature = [callWaiting, resultWaiting, unassigned, c.attention].join("|");
       if (state.notificationSignature && state.notificationSignature !== notificationSignature) {
         state.notificationsRead = false;
       }
@@ -3366,7 +3708,7 @@
       setText("#sideTodayCount", c.todayRows);
       setText("#sideActiveCount", c.active);
       setText("#sideCompletedCount", c.completed);
-      setText("#sideFailedCount", c.failed);
+      setText("#sideFailedCount", c.attention);
       setText("#sideCallWaiting", callWaiting);
       setText("#sideResultWaiting", resultWaiting);
       setText("#sideUnassigned", unassigned);
@@ -3374,7 +3716,8 @@
       setText("#agentLeeText", `배정 ${leeCount}건`);
       setWidth("#agentKimLoad", `${Math.min(100, kimCount * 25)}%`);
       setWidth("#agentLeeLoad", `${Math.min(100, leeCount * 25)}%`);
-      renderNotifications({ callWaiting, resultWaiting, unassigned, failed: c.failed });
+      renderNotifications({ callWaiting, resultWaiting, unassigned, failed: c.failed, attention: c.attention });
+      renderSmartFilterState();
       setText("#adminDummyState", state.dummyEnabled ? "ON" : "OFF");
       applyPermissionUi();
     }
@@ -3397,11 +3740,60 @@
       if (node) node.style.width = value;
     }
 
+    function smartFilterLabel(filter = state.smartFilter) {
+      if (!filter) return "전체 예약";
+      const labels = {
+        today: "오늘 접수",
+        active: "진행중",
+        completed: "예약 완료",
+        attention: "주의 필요",
+        call_waiting: "전화 대기",
+        result_waiting: "결과 대기",
+        unassigned: "미배정"
+      };
+      if (filter.type === "agent") return `${filter.label || filter.value} 배정건`;
+      return labels[filter.type] || "선택 필터";
+    }
+
+    function renderSmartFilterState() {
+      const bar = qs("#smartFilterBar");
+      const hasFilter = Boolean(state.smartFilter);
+      if (bar) {
+        bar.classList.toggle("active", hasFilter);
+        setText("#smartFilterLabel", smartFilterLabel());
+      }
+      qsa("[data-smart-filter]").forEach((node) => {
+        node.classList.toggle("active-filter", Boolean(state.smartFilter && node.dataset.smartFilter === state.smartFilter.type));
+      });
+      qsa("[data-agent]").forEach((node) => {
+        const active = state.smartFilter?.type === "agent" && state.smartFilter.value === node.dataset.agent;
+        node.classList.toggle("active-filter", active);
+      });
+    }
+
+    function clearManualFilters() {
+      ["searchInput", "statusFilter", "categoryFilter", "messengerFilter", "dateFrom", "dateTo"].forEach((id) => {
+        const node = qs(`#${id}`);
+        if (node) node.value = "";
+      });
+    }
+
+    function setSmartFilter(type, value = "", label = "") {
+      clearManualFilters();
+      state.smartFilter = type ? { type, value, label } : null;
+      state.view = "all";
+      qsa(".status-tab").forEach((button) => button.classList.toggle("active", button.dataset.view === state.view));
+      applyFilters();
+      showPage("reservations");
+      showToast(`${smartFilterLabel()} 목록을 표시합니다.`);
+    }
+
     function renderNotifications(data) {
       const items = [
         { icon: "☎", tone: "amber", title: "전화 대기", body: `${data.callWaiting}건의 예약이 업체 전화 연결을 기다립니다.`, time: "실시간" },
         { icon: "↗", tone: "blue", title: "결과 업데이트", body: `${data.resultWaiting}건은 고객 조회 화면 반영이 필요합니다.`, time: "CS" },
         { icon: "!", tone: "red", title: "미배정 예약", body: `${data.unassigned}건은 담당자를 배정해야 합니다.`, time: "배정" },
+        { icon: "!", tone: "red", title: "주의 필요", body: `${data.attention}건은 1시간 초과, 미배정, 실패, 결과 대기 상태입니다.`, time: "SLA" },
         { icon: "✓", tone: "green", title: "예약 완료", body: `${summary().completed}건은 고객이 조회할 수 있습니다.`, time: "완료" }
       ];
       setHtml("#notificationList", items.map((item) => `
@@ -3445,6 +3837,7 @@
         const statusLabel = statusInfo(item).label;
         const resultLabel = resultInfo(item).label;
         return viewMatches(item)
+          && smartFilterMatches(item)
           && (!keyword || haystack.includes(keyword))
           && (!status || statusLabel === status || resultLabel === status)
           && (!category || item.category === category)
@@ -3460,10 +3853,14 @@
       rows.innerHTML = state.filtered.map((item) => {
         const status = statusInfo(item);
         const result = resultInfo(item);
-        const selected = item.bookingNo === state.selectedId ? "selected" : "";
+        const rowClasses = [
+          item.bookingNo === state.selectedId ? "selected" : "",
+          isOverdue(item) ? "is-overdue" : "",
+          isLockedByOther(item) ? "is-locked" : ""
+        ].filter(Boolean).join(" ");
         const logoClass = messengerClass(item.messenger);
         return `
-          <tr class="${selected}" data-id="${escapeHtml(item.bookingNo)}">
+          <tr class="${rowClasses}" data-id="${escapeHtml(item.bookingNo)}">
             <td class="check-cell"><input class="row-check" type="checkbox" aria-label="예약 선택"></td>
             <td>${escapeHtml(formatDateTime(createdValue(item)))}</td>
             <td><span class="booking-link">${escapeHtml(item.bookingNo)}</span></td>
@@ -3474,6 +3871,7 @@
             <td><span class="badge ${status.badge}">${escapeHtml(status.label)}</span></td>
             <td><span class="badge ${result.badge}">${escapeHtml(result.label)}</span></td>
             <td>${escapeHtml(item.assignee || "-")}</td>
+            <td>${priorityHtml(item)}</td>
           </tr>
         `;
       }).join("");
@@ -3492,6 +3890,7 @@
       }
       renderDetail();
       renderUtilityPages();
+      renderSmartFilterState();
     }
 
     function countBy(rows, getter) {
@@ -3517,12 +3916,22 @@
       return `<span class="badge ${status.badge}">${escapeHtml(status.label)}</span>`;
     }
 
+    function priorityHtml(item) {
+      const lock = activeLock(item);
+      if (isOverdue(item)) return `<span class="badge red">${minutesSinceCreated(item)}분 초과</span>`;
+      if (!item.assignee) return '<span class="badge red">미배정</span>';
+      if (lock) return `<span class="badge amber">${escapeHtml(lock.ownerName || "작업중")}</span>`;
+      if (isResultWaiting(item)) return '<span class="badge blue">결과 대기</span>';
+      return '<span class="badge gray">정상</span>';
+    }
+
     function renderUtilityPages() {
       const rows = state.rows;
       const c = summary(rows);
       const callWaiting = rows.filter((item) => statusInfo(item).label === "전화 대기");
       const resultWaiting = rows.filter((item) => resultInfo(item).label === "결과 업데이트");
       const unassigned = rows.filter((item) => !item.assignee);
+      const attentionRows = rows.filter(isAttention);
       const latest = rows.slice(0, 6);
       const byCategory = Object.entries(countBy(rows, (item) => item.category)).sort((a, b) => b[1] - a[1]);
       const byMessenger = Object.entries(countBy(rows, (item) => item.messenger)).sort((a, b) => b[1] - a[1]);
@@ -3541,7 +3950,8 @@
       setHtml("#dashboardAlerts", [
         activityHtml("전화 대기", `${callWaiting.length}건이 전화 연결을 기다리고 있습니다.`, "amber"),
         activityHtml("결과 업데이트", `${resultWaiting.length}건은 고객 안내 메시지 저장이 필요합니다.`, "blue"),
-        activityHtml("미배정", `${unassigned.length}건은 담당자 배정이 필요합니다.`, "red")
+        activityHtml("미배정", `${unassigned.length}건은 담당자 배정이 필요합니다.`, "red"),
+        activityHtml("주의 필요", `${attentionRows.length}건은 SLA 또는 운영 확인이 필요합니다.`, "red")
       ].join(""));
       setHtml("#dashboardLatest", latest.map((item) => `
         <tr><td>${escapeHtml(item.bookingNo)}</td><td>${escapeHtml(item.placeName)}</td><td>${escapeHtml(item.reservationName)}</td><td>${miniStatus(item)}</td></tr>
@@ -3552,9 +3962,11 @@
         ["미배정", unassigned.length, "red"]
       ], Math.max(c.total, 1)));
 
-      const callRows = rows.filter((item) => statusInfo(item).bucket === "call" || resultInfo(item).label === "결과 업데이트");
+      const callRows = rows
+        .filter((item) => statusInfo(item).bucket === "call" || resultInfo(item).label === "결과 업데이트")
+        .sort((a, b) => workPriorityScore(a) - workPriorityScore(b) || createdTime(a) - createdTime(b));
       setHtml("#callQueueTable", callRows.map((item) => `
-        <tr><td>${escapeHtml(item.bookingNo)}</td><td>${escapeHtml(item.placeName)}</td><td>${escapeHtml(item.reservationName)}</td><td>${escapeHtml(item.messenger)} ${escapeHtml(item.messengerId || "")}</td><td>${miniStatus(item)}</td></tr>
+        <tr><td>${escapeHtml(item.bookingNo)}</td><td>${escapeHtml(item.placeName)}</td><td>${escapeHtml(item.reservationName)}</td><td>${escapeHtml(item.messenger)} ${escapeHtml(item.messengerId || "")}</td><td>${priorityHtml(item)}</td></tr>
       `).join(""));
       setHtml("#callScriptList", [
         settingsHtml("1. 업체 연결", "예약 가능 여부와 고객 요청사항을 먼저 확인합니다."),
@@ -3613,7 +4025,7 @@
       setHtml("#fieldSettings", [
         settingsHtml("고객 노출", "resultMessage, resultType, resultStatus, status"),
         settingsHtml("전화 처리", "callStatus, callStartedAt, callCompletedAt, checklist"),
-        settingsHtml("내부 관리", "assignee, internalMemo, updatedAtClient, updatedAtServer")
+        settingsHtml("내부 관리", "assignee, assigneeId, lock, activityLogs, callLogs, updatedAtClient, updatedAtServer")
       ].join(""));
       setHtml("#launchChecklist", [
         '<label><input type="checkbox"> Firebase Auth 관리자 계정 적용</label>',
@@ -3779,6 +4191,81 @@
       `).join("");
     }
 
+    function renderAssigneeControl(item) {
+      const select = qs("#assigneeSelect");
+      const options = ['<option value="">미배정</option>']
+        .concat(assignableAgents().map((user) => `<option value="${escapeHtml(user.id)}">${escapeHtml(user.name)} · ${escapeHtml(roleLabel(user.role))}</option>`));
+      const knownAssignee = item.assigneeId || agentByName(item.assignee)?.id || "";
+      if (item.assignee && !knownAssignee) {
+        options.push(`<option value="${escapeHtml(item.assignee)}">${escapeHtml(item.assignee)}</option>`);
+      }
+      select.innerHTML = options.join("");
+      select.value = knownAssignee || item.assignee || "";
+    }
+
+    function renderLockState(item) {
+      const lock = activeLock(item);
+      const blocked = isLockedByOther(item);
+      const node = qs("#lockState");
+      if (!lock) {
+        node.className = "lock-card";
+        node.innerHTML = "<strong>작업 잠금 없음</strong><span>작업 잠금 또는 전화 시작 시 10분 동안 수정 권한을 선점합니다.</span>";
+      } else {
+        const expires = formatShortDateTime(lock.expiresAt);
+        node.className = `lock-card ${blocked ? "blocked" : "locked"}`;
+        node.innerHTML = `<strong>${escapeHtml(lock.ownerName || "상담자")} 처리중</strong><span>잠금 만료 ${escapeHtml(expires)} · 다른 상담자와 동시 수정 충돌을 막습니다.</span>`;
+      }
+      const canRelease = Boolean(lock && (lock.ownerId === currentActor().id || isAdminUser()));
+      qs("#lockBtn").disabled = Boolean(blocked);
+      qs("#releaseLockBtn").disabled = !canRelease;
+    }
+
+    function syntheticLogs(item) {
+      const logs = [{
+        id: `${item.bookingNo}-created`,
+        title: "예약 접수",
+        actorName: "고객",
+        memo: `${item.messenger || "메신저"}로 접수`,
+        createdAt: createdValue(item)
+      }];
+      if (item.callStartedAt) {
+        logs.push({ id: `${item.bookingNo}-call-started`, title: "전화 시작", actorName: item.assignee || "CS", memo: "업체 전화 연결 시작", createdAt: item.callStartedAt });
+      }
+      if (item.callCompletedAt) {
+        logs.push({ id: `${item.bookingNo}-call-completed`, title: "전화 완료", actorName: item.assignee || "CS", memo: "통화 완료 처리", createdAt: item.callCompletedAt });
+      }
+      if (item.resultUpdatedAt) {
+        logs.push({ id: `${item.bookingNo}-result`, title: "결과 저장", actorName: item.assignee || "CS", memo: item.resultMessage || "고객 조회 화면 반영", createdAt: item.resultUpdatedAt });
+      }
+      return logs;
+    }
+
+    function renderActivityLog(item) {
+      const logs = [...syntheticLogs(item), ...(item.activityLogs || [])]
+        .filter((log) => log && (log.title || log.type))
+        .sort((a, b) => (parseDate(b.createdAt)?.getTime() || 0) - (parseDate(a.createdAt)?.getTime() || 0))
+        .slice(0, 12);
+      qs("#activityLogList").innerHTML = logs.map((log) => `
+        <div class="log-item">
+          <strong>${escapeHtml(log.title || logTitle(log.type))}</strong>
+          <span><b>${escapeHtml(log.actorName || "시스템")}</b> · ${escapeHtml(formatDateTime(log.createdAt))}</span>
+          <span>${escapeHtml(log.memo || [log.fromStatus, log.toStatus].filter(Boolean).join(" → ") || "상태 기록")}</span>
+        </div>
+      `).join("");
+    }
+
+    function setDetailControlsDisabled(disabled) {
+      [
+        "#assigneeSelect", "#assignMeBtn", "#autoAssignBtn", "#startCallBtn", "#completeCallBtn",
+        "#callBtn", "#holdBtn", "#saveNextBtn", "#resultMessage"
+      ].forEach((selector) => {
+        const node = qs(selector);
+        if (node) node.disabled = Boolean(disabled);
+      });
+      qsa("[data-check]").forEach((input) => { input.disabled = Boolean(disabled); });
+      qsa('input[name="resultType"]').forEach((input) => { input.disabled = Boolean(disabled); });
+    }
+
     function selectedItem() {
       return state.rows.find((item) => item.bookingNo === state.selectedId);
     }
@@ -3794,8 +4281,15 @@
         qs("#detailUpdated").textContent = "-";
         qs("#compactInfo").innerHTML = "";
         qs("#progressSteps").innerHTML = "";
+        qs("#assigneeSelect").innerHTML = '<option value="">예약 선택 필요</option>';
+        qs("#lockState").className = "lock-card";
+        qs("#lockState").innerHTML = "<strong>작업 잠금 없음</strong><span>예약을 선택하면 담당과 잠금 상태를 확인할 수 있습니다.</span>";
+        qs("#activityLogList").innerHTML = "";
         qs("#resultMessage").value = "";
+        qs("#lockBtn").disabled = true;
+        qs("#releaseLockBtn").disabled = true;
         qsa("[data-check]").forEach((input) => { input.checked = false; });
+        setDetailControlsDisabled(true);
         return;
       }
 
@@ -3815,6 +4309,9 @@
         ["결제", `${item.priceUsd ? `$${Number(item.priceUsd).toFixed(2)} USD` : "-"} · ${item.payMethod || "-"} · ${item.paymentStatus === "paid" ? "완료" : item.paymentStatus || "-"}`],
         ["요청사항", item.requestTitle || item.procedureName || item.note, true]
       ]);
+      renderAssigneeControl(item);
+      renderLockState(item);
+      renderActivityLog(item);
       renderSteps(item);
       qsa("[data-check]").forEach((input) => {
         input.checked = item.checklist.includes(input.dataset.check);
@@ -3823,6 +4320,7 @@
       const radio = qs(`input[name="resultType"][value="${resultType}"]`);
       if (radio) radio.checked = true;
       qs("#resultMessage").value = item.resultMessage || defaultMessage(resultType, item);
+      setDetailControlsDisabled(isLockedByOther(item));
     }
 
     function renderSteps(item) {
@@ -3922,6 +4420,7 @@
     }
 
     function setView(view) {
+      state.smartFilter = null;
       state.view = view;
       qsa(".status-tab").forEach((button) => button.classList.toggle("active", button.dataset.view === view));
       applyFilters();
@@ -3944,8 +4443,14 @@
         users: "users"
       };
       const nextPage = pageMap[nav] || "reservations";
-      if (nav === "all") state.view = "all";
-      if (nav === "call") state.view = "call";
+      if (nav === "all") {
+        state.view = "all";
+        state.smartFilter = null;
+      }
+      if (nav === "call") {
+        state.view = "call";
+        state.smartFilter = null;
+      }
       qsa(".status-tab").forEach((button) => button.classList.toggle("active", button.dataset.view === state.view));
       applyFilters();
       showPage(nextPage);
@@ -3961,16 +4466,40 @@
       renderDetail();
     }
 
-    async function updateReservation(patch, message) {
+    function workPriorityScore(item) {
+      if (isOverdue(item)) return 0;
+      if (!item.assignee) return 1;
+      if (isResultWaiting(item)) return 2;
+      if (statusInfo(item).label === "전화 대기") return 3;
+      if (statusInfo(item).label === "통화중") return 4;
+      return 9;
+    }
+
+    function nextWorkItem() {
+      return state.rows
+        .filter((item) => !isCompleted(item) && !isFailed(item))
+        .filter((item) => !isLockedByOther(item))
+        .sort((a, b) => workPriorityScore(a) - workPriorityScore(b) || createdTime(a) - createdTime(b))[0];
+    }
+
+    async function updateReservation(patch, message, options = {}) {
       const item = selectedItem();
       if (!item) {
         showToast("예약을 먼저 선택하세요.");
         return;
       }
-      const payload = {
+      if (!options.skipLock && isLockedByOther(item)) {
+        const lock = activeLock(item);
+        showToast(`${lock.ownerName || "다른 상담자"}가 처리 중인 예약입니다.`);
+        renderDetail();
+        return;
+      }
+      const lockPatch = options.skipLock || activeLock(item) ? {} : { lock: buildLock() };
+      const payload = withLogPayload(item, {
+        ...lockPatch,
         ...patch,
         updatedAtClient: new Date().toISOString()
-      };
+      }, options);
       if (item.source === "firebase" && state.firebaseReady && state.firebaseTools && state.db) {
         const { doc, updateDoc, serverTimestamp } = state.firebaseTools;
         await updateDoc(doc(state.db, "reservations", item.bookingNo), {
@@ -3987,14 +4516,75 @@
       return qsa("[data-check]").filter((input) => input.checked).map((input) => input.dataset.check);
     }
 
+    async function assignSelectedTo(userId, logType = "assigned") {
+      const item = selectedItem();
+      if (!item) return showToast("예약을 먼저 선택하세요.");
+      const user = agentById(userId) || agentByName(userId);
+      const name = user?.name || userId || "";
+      await updateReservation({
+        assigneeId: user?.id || "",
+        assignee: name
+      }, name ? `${name} 담당으로 배정했습니다.` : "담당자를 미배정으로 변경했습니다.", {
+        logType,
+        logMemo: name ? `${name}에게 배정` : "담당자 해제"
+      });
+    }
+
+    function bestAssignableAgent() {
+      const agents = assignableAgents();
+      return agents
+        .map((user) => ({
+          user,
+          active: state.rows.filter((item) => item.assigneeId === user.id || item.assignee === user.name).filter((item) => !isCompleted(item) && !isFailed(item)).length
+        }))
+        .sort((a, b) => a.active - b.active || a.user.name.localeCompare(b.user.name, "ko"))[0]?.user || null;
+    }
+
+    async function autoAssignSelected() {
+      const user = bestAssignableAgent();
+      if (!user) return showToast("배정 가능한 상담자가 없습니다.");
+      await assignSelectedTo(user.id, "auto_assigned");
+    }
+
+    async function acquireLockSelected() {
+      const item = selectedItem();
+      if (!item) return showToast("예약을 먼저 선택하세요.");
+      if (isLockedByOther(item)) {
+        const lock = activeLock(item);
+        return showToast(`${lock.ownerName || "다른 상담자"}가 처리 중입니다.`);
+      }
+      await updateReservation({ lock: buildLock() }, "작업 잠금을 설정했습니다.", {
+        skipLock: true,
+        logType: "lock_acquired",
+        logMemo: "10분 작업 잠금"
+      });
+    }
+
+    async function releaseLockSelected() {
+      const item = selectedItem();
+      if (!item) return showToast("예약을 먼저 선택하세요.");
+      const lock = activeLock(item);
+      if (!lock) return showToast("해제할 잠금이 없습니다.");
+      if (lock.ownerId !== currentActor().id && !isAdminUser()) return showToast("잠금 해제 권한이 없습니다.");
+      await updateReservation({ lock: null }, "작업 잠금을 해제했습니다.", {
+        skipLock: true,
+        logType: "lock_released",
+        logMemo: `${lock.ownerName || "상담자"} 잠금 해제`
+      });
+    }
+
     async function callSelected() {
       const item = selectedItem();
       if (!item) return showToast("예약을 먼저 선택하세요.");
       await updateReservation({
         callStatus: "in_progress",
         status: "calling",
-        callStartedAt: new Date().toISOString()
-      }, "전화 업무를 시작했습니다.");
+        callStartedAt: new Date().toISOString(),
+        callAttempts: Number(item.callAttempts || 0) + 1
+      }, "전화 업무를 시작했습니다.", {
+        logType: "call_started",
+        logMemo: `${Number(item.callAttempts || 0) + 1}번째 전화 시도`
+      });
       if (item.placePhone) window.location.href = `tel:${String(item.placePhone).replaceAll(" ", "")}`;
     }
 
@@ -4003,7 +4593,10 @@
         checklist: selectedChecklist(),
         resultMessage: qs("#resultMessage").value.trim(),
         status: "hold"
-      }, "보류 상태로 저장했습니다.");
+      }, "보류 상태로 저장했습니다.", {
+        logType: "hold",
+        logMemo: qs("#resultMessage").value.trim() || "보류"
+      });
     }
 
     async function completeSelectedCall() {
@@ -4012,7 +4605,10 @@
         status: "call_completed",
         checklist: selectedChecklist(),
         callCompletedAt: new Date().toISOString()
-      }, "전화 완료로 처리했습니다.");
+      }, "전화 완료로 처리했습니다.", {
+        logType: "call_completed",
+        logMemo: "전화 완료"
+      });
     }
 
     async function saveAndNext() {
@@ -4030,7 +4626,10 @@
         checklist: selectedChecklist(),
         status,
         resultUpdatedAt: new Date().toISOString()
-      }, "저장하고 고객 조회 화면에 반영했습니다.");
+      }, "저장하고 고객 조회 화면에 반영했습니다.", {
+        logType: "result_saved",
+        logMemo: resultLabel
+      });
       const currentIndex = state.filtered.findIndex((row) => row.bookingNo === item.bookingNo);
       const next = state.filtered[currentIndex + 1] || state.filtered[0];
       if (next) selectRow(next.bookingNo);
@@ -4089,6 +4688,7 @@
       qs("#loginPage").classList.add("hidden");
       qs("#app").classList.remove("hidden");
       state.dummyRows = dummyRows.map((item) => normalize(item.bookingNo, item, "dummy"));
+      setDefaultDateRange();
       qs("#loginTime").textContent = new Intl.DateTimeFormat("ko-KR", {
         year: "numeric",
         month: "2-digit",
@@ -4203,6 +4803,31 @@
           setNavPage(button.dataset.nav);
         });
       });
+      qs("#clearSmartFilterBtn").addEventListener("click", () => {
+        state.smartFilter = null;
+        applyFilters();
+        showToast("필터를 해제했습니다.");
+      });
+      qsa("[data-smart-filter]").forEach((node) => {
+        const activate = () => setSmartFilter(node.dataset.smartFilter);
+        node.addEventListener("click", activate);
+        node.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            activate();
+          }
+        });
+      });
+      qsa("[data-agent]").forEach((node) => {
+        const activate = () => setSmartFilter("agent", node.dataset.agent, node.dataset.agent);
+        node.addEventListener("click", activate);
+        node.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            activate();
+          }
+        });
+      });
       qsa("[data-page-refresh]").forEach((button) => {
         button.addEventListener("click", () => {
           renderUtilityPages();
@@ -4224,14 +4849,20 @@
       });
       qs("#callBtn").addEventListener("click", callSelected);
       qs("#callPageNextBtn").addEventListener("click", () => {
-        const next = state.rows.find((item) => statusInfo(item).bucket === "call");
+        const next = nextWorkItem();
         if (next) {
           selectRow(next.bookingNo);
-          showToast(`${next.bookingNo} 전화건을 열었습니다.`);
+          showPage("reservations");
+          showToast(`${next.bookingNo} 우선 처리건을 열었습니다.`);
         } else {
-          showToast("대기 중인 전화 업무가 없습니다.");
+          showToast("대기 중인 처리 업무가 없습니다.");
         }
       });
+      qs("#assigneeSelect").addEventListener("change", (event) => assignSelectedTo(event.target.value));
+      qs("#assignMeBtn").addEventListener("click", () => assignSelectedTo(currentActor().id));
+      qs("#autoAssignBtn").addEventListener("click", autoAssignSelected);
+      qs("#lockBtn").addEventListener("click", acquireLockSelected);
+      qs("#releaseLockBtn").addEventListener("click", releaseLockSelected);
       qs("#startCallBtn").addEventListener("click", callSelected);
       qs("#completeCallBtn").addEventListener("click", completeSelectedCall);
       qs("#holdBtn").addEventListener("click", holdSelected);
