@@ -2393,7 +2393,7 @@
           <button id="menuBtn" class="menu-btn" type="button" aria-label="메뉴 열기"><span class="menu-lines"></span></button>
           <div class="top-title">
             <h1>예약 관리</h1>
-            <p>Firebase reservations 컬렉션 수신</p>
+            <p>Firebase Realtime Database /reservations 수신</p>
           </div>
         </div>
         <div class="top-right">
@@ -2715,7 +2715,7 @@
             <div class="page-head">
               <div>
                 <h2>설정</h2>
-                <p>Firebase 컬렉션, 결과 반영 필드, 운영 정책을 확인합니다.</p>
+                <p>Firebase Realtime Database 경로, 결과 반영 필드, 운영 정책을 확인합니다.</p>
               </div>
             </div>
             <div class="settings-grid">
@@ -2746,7 +2746,7 @@
               </div>
               <button id="userCreateBtn" class="primary-btn" type="button">사용자 추가</button>
             </div>
-            <div id="userAdminNotice" class="permission-note">ADMIN 권한 계정만 사용자 추가, 편집, 삭제가 가능합니다. 운영 배포 시 Firebase Auth와 Firestore Rules로 동일한 권한 정책을 서버에서도 제한해야 합니다.</div>
+            <div id="userAdminNotice" class="permission-note">ADMIN 권한 계정만 사용자 추가, 편집, 삭제가 가능합니다. 운영 배포 시 Firebase Auth와 Realtime Database Rules로 동일한 권한 정책을 서버에서도 제한해야 합니다.</div>
             <div class="users-grid">
               <div class="page-card pad users-table-card">
                 <h3>사용자 목록</h3>
@@ -2902,14 +2902,16 @@
 
   <script type="module">
     const firebaseConfig = {
-      apiKey: "AIzaSyAryJmkrF3wWJRymP41pmjFpPLTYGzZXBg",
-      authDomain: "kall-yellowknife.firebaseapp.com",
-      projectId: "kall-yellowknife",
-      storageBucket: "kall-yellowknife.firebasestorage.app",
-      messagingSenderId: "988921015756",
-      appId: "1:988921015756:web:e991407b592a75008b4169",
-      measurementId: "G-H5ZV5KFW33"
+      apiKey: "AIzaSyCcWWLiYxvKB8_9gaahW5fwyBavgO-AZQ8",
+      authDomain: "equipment-a6a8c.firebaseapp.com",
+      databaseURL: "https://equipment-a6a8c-default-rtdb.firebaseio.com",
+      projectId: "equipment-a6a8c",
+      storageBucket: "equipment-a6a8c.firebasestorage.app",
+      messagingSenderId: "816613863838",
+      appId: "1:816613863838:web:48dcd792f528e1c53a268f"
     };
+
+    const FIREBASE_RESERVATIONS_PATH = "reservations";
 
     const qs = (selector, scope = document) => scope.querySelector(selector);
     const qsa = (selector, scope = document) => Array.from(scope.querySelectorAll(selector));
@@ -4012,10 +4014,11 @@
       ].join(""));
 
       setHtml("#firebaseSettings", [
-        settingsHtml("프로젝트", "kall-yellowknife"),
-        settingsHtml("컬렉션", "reservations"),
-        settingsHtml("문서 키", "bookingNo 기준 reservations/{bookingNo}"),
-        settingsHtml("실시간 수신", "onSnapshot으로 접수 및 CS 변경사항 반영")
+        settingsHtml("프로젝트", "equipment-a6a8c"),
+        settingsHtml("데이터베이스", "https://equipment-a6a8c-default-rtdb.firebaseio.com"),
+        settingsHtml("경로", `/${FIREBASE_RESERVATIONS_PATH}`),
+        settingsHtml("노드 키", `bookingNo 기준 ${FIREBASE_RESERVATIONS_PATH}/{bookingNo}`),
+        settingsHtml("실시간 수신", "onValue로 접수 및 CS 변경사항 반영")
       ].join(""));
       setHtml("#policySettings", [
         settingsHtml("초기 로그인", "admin / 1234"),
@@ -4029,7 +4032,7 @@
       ].join(""));
       setHtml("#launchChecklist", [
         '<label><input type="checkbox"> Firebase Auth 관리자 계정 적용</label>',
-        '<label><input type="checkbox"> Firestore Rules 관리자 쓰기 권한 제한</label>',
+        '<label><input type="checkbox"> Realtime Database Rules 관리자 쓰기 권한 제한</label>',
         '<label><input type="checkbox"> 더미데이터 토글 제거</label>',
         '<label><input type="checkbox"> 고객 안내 메시지 템플릿 최종 검수</label>'
       ].join(""));
@@ -4501,8 +4504,8 @@
         updatedAtClient: new Date().toISOString()
       }, options);
       if (item.source === "firebase" && state.firebaseReady && state.firebaseTools && state.db) {
-        const { doc, updateDoc, serverTimestamp } = state.firebaseTools;
-        await updateDoc(doc(state.db, "reservations", item.bookingNo), {
+        const { ref, update, serverTimestamp } = state.firebaseTools;
+        await update(ref(state.db, `${FIREBASE_RESERVATIONS_PATH}/${item.bookingNo}`), {
           ...payload,
           updatedAtServer: serverTimestamp()
         });
@@ -4637,35 +4640,37 @@
 
     async function connectFirebase() {
       try {
-        const [appSdk, firestoreSdk, analyticsSdk] = await Promise.all([
+        const [appSdk, databaseSdk, analyticsSdk] = await Promise.all([
           import("https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js"),
-          import("https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js"),
+          import("https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js"),
           import("https://www.gstatic.com/firebasejs/12.13.0/firebase-analytics.js")
         ]);
         const app = appSdk.initializeApp(firebaseConfig);
-        state.db = firestoreSdk.getFirestore(app);
+        state.db = databaseSdk.getDatabase(app);
         state.firebaseTools = {
-          collection: firestoreSdk.collection,
-          doc: firestoreSdk.doc,
-          onSnapshot: firestoreSdk.onSnapshot,
-          serverTimestamp: firestoreSdk.serverTimestamp,
-          updateDoc: firestoreSdk.updateDoc
+          ref: databaseSdk.ref,
+          onValue: databaseSdk.onValue,
+          serverTimestamp: databaseSdk.serverTimestamp,
+          update: databaseSdk.update
         };
         analyticsSdk.isSupported().then((supported) => {
           if (supported) analyticsSdk.getAnalytics(app);
         }).catch(() => {});
-        state.unsubscribe = firestoreSdk.onSnapshot(
-          firestoreSdk.collection(state.db, "reservations"),
+        state.unsubscribe = databaseSdk.onValue(
+          databaseSdk.ref(state.db, FIREBASE_RESERVATIONS_PATH),
           (snapshot) => {
             state.firebaseReady = true;
-            state.firebaseRows = snapshot.docs.map((entry) => normalize(entry.id, entry.data(), "firebase"));
-            setConnection("live", "Firebase 연결");
+            const data = snapshot.val() || {};
+            state.firebaseRows = Object.entries(data)
+              .filter(([, value]) => value && typeof value === "object")
+              .map(([key, value]) => normalize(key, value, "firebase"));
+            setConnection("live", "Realtime DB 연결");
             refreshAll();
           },
           (error) => {
-            console.warn("Firebase snapshot error", error);
+            console.warn("Firebase realtime database error", error);
             state.firebaseReady = false;
-            setConnection("error", "Firebase 권한 확인 필요");
+            setConnection("error", "Realtime DB 권한 확인 필요");
             refreshAll();
           }
         );
